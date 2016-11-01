@@ -1,0 +1,203 @@
+/*公共样式*/
+html, body, div, ul, li, h1, h2, h3, h4, h5, h6, p, dl, dt, dd, ol, form, input, textarea, th, td, select {
+    margin: 0;
+    padding: 0;
+}
+*{
+    box-sizing: border-box;
+}
+html, body {
+    min-height: 100%;
+}
+body {
+    font-family: "Microsoft YaHei";
+    font-size:14px;
+    color:#333;
+    background-color: #f2f9fd;
+}
+h1, h2, h3, h4, h5, h6{
+    font-weight:normal;
+}
+ul,ol {
+    list-style: none;
+}
+img {
+    border: none;
+    vertical-align: middle;
+}
+a {
+    text-decoration: none;
+    color: #232323;
+}
+table {
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+input, textarea {
+    outline: none;
+    border: none;
+}
+textarea {
+    resize: none;
+    overflow: auto;
+}
+/* ../公共样式*/
+body{
+    background: #fefefe;
+}
+.container{
+    width: 960px;
+}
+#header{
+    height:95px;
+    font-size: 14px;
+    color: #666;
+    background: url("../img/eyoung_bg.jpg") repeat-x 50% 0;
+}
+#header .container{
+    height: 95px;
+}
+#header .container .logo{
+    float: left;
+    width: 150px;
+    height: 95px;
+    text-align: center;
+    line-height: 95px;
+}
+#header .container .info{
+    float: right;
+    height: 56px;
+    margin-top: 18px;
+}
+#header .container #info-form{
+    height: 56px;
+}
+#header .container #info-form .info-wrap{
+    height: 56px;
+}
+#header .container #info-form .info-wrap table{
+    height: 56px;
+}
+#header .container #info-form .info-wrap table input{
+    outline: none;
+    padding: 2px 4px;
+    border: 1px solid #ddd;
+}
+#header .container #info-form .info-wrap table label{
+    color: #666;
+    font-weight: normal;
+}
+#sel{
+    border: none;
+    background: transparent;
+}
+#user,#psw{
+    width: 145px;
+    margin-right: 10px;
+}
+#auto-login{
+    width: 13px;
+    height:13px;
+    position: relative;
+    top: 2px;
+    margin-right: 5px;
+    color: #666;
+}
+#sub-btn{
+    width: 76px;
+    font-weight: 600;
+}
+#login{
+    color: #369;
+}
+#nav{
+    width: 400px;
+    float: left;
+}
+#navbar{
+    line-height:50px;
+    margin-bottom:0;
+}
+#navbar .container{
+    padding-right: 0;
+    padding-left: 0;
+}
+#nav a{
+    color: #fff;
+}
+#nav li a:hover{
+    background: #0890FF;
+}
+#search{
+    width: 300px;
+    float: right;
+    line-height:50px;
+}
+.chart{
+    height: 57px;
+    line-height: 57px;
+    border: 1px solid #fff;
+    background: #f9f6f6;
+    border-radius: 3px;
+    padding-left: 10px;
+}
+.chart p{
+    background: url("../img/chart.png") no-repeat;
+    text-indent: 30px;
+    height: 30px;
+    line-height:30px;
+    margin-top: 12px;
+}
+.chart p em{
+    color: #444;
+}
+.pipe{
+    margin: 0 5px;
+    color: #ccc;
+}
+
+/*登录之后样式*/
+#header .info ul{
+    height: 100%;
+}
+#header .info ul li{
+    list-style: none;
+    display: inline-block;
+    height: 100%;
+    margin: 0 3px;
+}
+#header .info ul .headpic{
+    padding: 2px;
+    background-color: #fff;
+    vertical-align: middle;
+    height: 53px;
+    border-radius: 3px;
+}
+#header .info ul .headpic a{
+    display: block;
+}
+#header .info ul .headpic a img{
+    border-radius: 3px;
+}
+.person {
+    background: url(../img/user_online.gif) no-repeat 0% 8%;
+    width: 50px;
+    text-indent: 15px;
+}
+
+/*位置信息*/
+#position{
+    height: 20px;
+    line-height: 20px;
+    margin-top: 10px;
+}
+#position .container{
+    line-height: 20px;
+}
+#position .container i{
+    font-size: 20px;
+    color: #048f04;
+    margin-right: 5px;
+}
+
+

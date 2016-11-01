@@ -1,0 +1,46 @@
+.padding {
+    padding: 10px;
+}
+.border-bottom {
+    border-bottom: 1px solid #ddd;
+}
+.padding.border-bottom .search {
+    overflow: hidden;
+    margin-bottom: 0;
+}
+.padding.border-bottom .search li{
+    list-style: none;
+    float: left;
+    margin-right: 15px;
+    line-height: 35px;
+}
+.button{
+    padding: 10px 15px;
+}
+.btn-c{
+    color: #fff;
+    border-color: #0ae;
+    background-color: #0ae;
+}
+.btn-c:hover{
+    color: #fff;
+    border-color: #3bd;
+    background-color: #3bd;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1) 0s;
+}
+.body-content .table th{
+    text-align: center;
+}
+.body-content .table tr{
+    border-top: 1px solid #ddd;
+}
+.body-content .table tr td{
+    text-align: center;
+    padding: 0;
+    line-height: 50px;
+    height: 50px;
+}
+.pagination li{
+    display: inline-block;
+    margin-right: 3px;
+}

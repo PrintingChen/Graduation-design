@@ -1,0 +1,66 @@
+#container{
+    width: 960px;
+    margin-top: 10px;
+}
+#container .bm {
+    border: 1px solid #CDCDCD;
+    background: #FFF;
+    overflow: hidden;
+}
+#container .bm .bm-h {
+    padding: 0 8px;
+    height: 31px;
+    line-height: 31px;
+    background-color: #F2F2F2;
+    border-bottom: 1px solid #CDCDCD;
+}
+#container .bm .bm-h .login-info{
+    font-size: 16px;
+    height: 100%;
+    line-height: 31px;
+    font-weight: 600;
+}
+#container .bm .bm-h .y{
+    float: right;
+}
+#container .bm .bm-h .y a{
+    color: #369;
+}
+.form-group{
+    height: 40px;
+    line-height: 40px;
+    margin-top: 10px;
+}
+.form-group p{
+    color: #C9302C;
+}
+.tac{
+    text-align: right;
+}
+.w40{
+    width: 40%;
+    display: inline-block;
+}
+.success{
+    border-color: #5CB85C;
+}
+.error{
+    border-color: #C9302C;
+}
+.yzmpic{
+    margin-right: 25px;
+}
+.custom{
+    margin-right: 3px;
+}
+.input-help.error-message {
+    display: inline-block;
+    margin-left: 15px;
+}
+.input-help.success-message {
+    display: inline-block;
+    margin-left: 15px;
+}
+i.fa.fa-check {
+    color: #5CB85C;
+}
