@@ -1,0 +1,35 @@
+#profile{
+    margin-top: 10px;
+}
+#profile .profile-h{
+    height: 100px;
+    padding-top: 10px;
+    padding-left: 10px;
+    border: 1px solid #CCC;
+    background: #E5EDF2;
+}
+#profile .profile-h a{
+    display: inline-block;
+    padding: 3px;
+    background-color: #fff;
+    border-radius: 3px;
+    margin-top: 10px;
+    float: left;
+}
+#profile .profile-h a img{
+    border-radius: 3px;
+}
+#profile .profile-h .info{
+    float: left;
+    margin-top: 18px;
+    margin-left: 8px;
+}
+#profile .person-info{
+    background-color: #fff;
+    padding-top: 20px;
+    padding-left: 25px;
+    padding-bottom: 10px;
+    padding-right: 25px;
+    border: 1px solid #CCC;
+    border-top: none;
+}
