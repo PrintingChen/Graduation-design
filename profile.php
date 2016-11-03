@@ -1,3 +1,16 @@
+<?php
+    //开启session
+    session_start();
+    //定义常量ON来获取访问页面的权限
+    define('ON', true);
+    //引入公共文件
+    require_once 'inc/common.inc.php';
+    //调用数据库连接函数
+    $link = connect();
+    //判断当前是否为登录状态
+    $member_id = login_state($link);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,35 +19,7 @@
     <link rel="stylesheet" href="font/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/common.css">
-    <style>
-        #profile{
-            margin-top: 10px;
-        }
-        #profile .container{
-            border: 1px solid #ccc;
-            padding: 0;
-        }
-        #profile .container .profile-h{
-            height: 100px;
-            background-color: #E5EDF2;
-            border-bottom: 1px solid #ccc;
-        }
-        #profile .container .profile-h a{
-            display: inline-block;
-            padding: 2px;
-            background-color: #fff;
-            border-radius: 3px;
-            margin-top: 15px;
-            margin-left: 15px;
-        }
-        #profile .container .profile-h a img{
-            border-radius: 3px;
-        }
-        .person-info{
-            background-color: #fff;
-            padding:  10px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/profile.css">
 </head>
 <body>
 <!--引入头部-->
@@ -53,7 +38,10 @@
     <div class="container">
         <div class="profile-h">
             <a href="profile.php"><img src="img/noavatar_small.gif" alt=""></a>
-            李四个人资料
+            <div class="info">
+                <?php echo $res_info['name']?>个人资料<br>
+                UID：<?php echo $res_info['id']?>
+            </div>
         </div>
         <div class="person-info">
             sdf

@@ -1,3 +1,91 @@
+<?php
+    //开启session
+    session_start();
+    //定义常量ON来获取访问页面的权限
+    define('ON', true);
+    //引入公共文件
+    require_once 'inc/common.inc.php';
+    //调用数据库连接函数
+    $link = connect();
+    //判断当前是否为登录状态
+    $member_id = login_state($link);
+    //查询出当前用户的信息
+    $sql_info = "select * from user where id='{$member_id}'";
+    $res_info = fetch_array(execute($link, $sql_info));
+    //引入处理登录信息
+    include_once "inc/handlerLogin.php";
+    //处理提交的基本资料的数据
+    if (isset($_POST['subBasic'])){
+        //将提交的数据插入到数据库当中
+        $birthday = $_POST['year']."年".$_POST['month']."月".$_POST['day']."日";
+        $homeplace = $_POST['birprov'].$_POST['bircity'].$_POST['birdistrict'];
+        $sql_ins = "update user set reallyName='{$_POST['reallyName']}',sex='{$_POST['sex']}',birthday='{$birthday}',homeplace='{$homeplace}',bloodType='{$_POST['bloodtype']}' where id='{$member_id}'";
+        execute($link, $sql_ins);
+        if (mysqli_affected_rows($link)) {
+            promptBox("数据更新成功", 6, "setProfile.php");
+        }else {
+            promptBox("数据更新失败", 5, "setProfile.php");
+        }
+    }
+    //处理提交的联系方式的数据
+    if (isset($_POST['subContact'])){
+        //将提交的数据插入到数据库当中
+        $sql_contact = "update user set fixedTel='{$_POST['fixed-tel']}',phone='{$_POST['phone']}',qq='{$_POST['qq']}',website='{$_POST['homepage']}' where id='{$member_id}'";
+        execute($link, $sql_contact);
+        if (mysqli_affected_rows($link)) {
+            promptBox("数据更新成功", 6, "setProfile.php");
+        }else {
+            promptBox("数据更新失败", 5, "setProfile.php");
+        }
+    }
+    //处理提交的教育情况的数据
+    if (isset($_POST['subEducation'])){
+        //将提交的数据插入到数据库当中
+        $sql_edu = "update user set school='{$_POST['school']}',degree='{$_POST['degrees']}' where id='{$member_id}'";
+        execute($link, $sql_edu);
+        if (mysqli_affected_rows($link)) {
+            promptBox("数据更新成功", 6, "setProfile.php");
+        }else {
+            promptBox("数据更新失败", 5, "setProfile.php");
+        }
+    }
+    //处理提交的工作情况的数据
+    if (isset($_POST['subWorking'])){
+    //将提交的数据插入到数据库当中
+    $sql_working = "update user set company='{$_POST['company']}',profession='{$_POST['profession']}',job='{$_POST['job']}',income='{$_POST['income']}' where id='{$member_id}'";
+    execute($link, $sql_working);
+    if (mysqli_affected_rows($link)) {
+        promptBox("数据更新成功", 6, "setProfile.php");
+    }else {
+        promptBox("数据更新失败", 5, "setProfile.php");
+    }
+}
+    //处理提交的修改密码的数据
+    if (isset($_POST['subMdfpsw'])){
+    //将提交的数据插入到数据库当中
+    check_vcode($_POST['yzm'], $_SESSION['code']);
+    $opsw = md5($_POST['opsw']);
+    $npsw = md5($_POST['npsw']);
+    //将提交过来的旧密码比对数据库里面的密码是否一致
+    $sql_compare = "select * from user where id='{$member_id}' and psw='{$opsw}'";
+    if (nums($link, $sql_compare)) {
+        //开始更新密码
+        $sql_mdfpsw = "update user set psw='{$npsw}' where id='{$member_id}'";
+        execute($link, $sql_mdfpsw);
+        if (mysqli_affected_rows($link)) {
+            //密码修改成功后将原来登录的信息cookie删除掉
+            setcookie('bs[userName]', '', time()-36000);
+            setcookie('bs[psw]', '', time()-36000);
+            promptBox("数据更新成功，请重新登录", 6, "index.php");
+        }else {
+            promptBox("数据更新失败", 5, "setProfile.php");
+        }
+    }else{
+        skip('setProfile.php', 'error', '旧密码错误^_^');
+        exit();
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,191 +94,12 @@
     <link rel="stylesheet" href="font/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/setProfile.css">
     <script src="js/jquery-1.12.2.min.js"></script>
     <script src="css/bootstrap/js/bootstrap.min.js"></script>
     <script src="js/formValidator.js"></script>
     <script src="js/area.js"></script>
-
-    <script></script>
-    <script>
-        $(function () {
-            //标签页切换
-            $("#myTab a").on("click", function (e) {
-                e.preventDefault();
-                $(this).tab("show");
-            });
-            //左侧栏点击切换
-            $("#navbar-left li").on("click",function () {
-                //添加样式
-                $(this).addClass("mdfpic").siblings().removeClass("mdfpic");
-            });
-            $("#navbar-left li").eq(0).on("click", function () {
-                $(".head-pic").css("display", "block");
-                $(".profile-info").css("display", "none");
-                $(".mdf-psw").css("display", "none");
-            });
-            $("#navbar-left li").eq(1).on("click", function () {
-                $(".head-pic").css("display", "none");
-                $(".profile-info").css("display", "block");
-                $(".mdf-psw").css("display", "none");
-            });
-            $("#navbar-left li").eq(2).on("click", function () {
-                $(".head-pic").css("display", "none");
-                $(".profile-info").css("display", "none");
-                $(".mdf-psw").css("display", "block");
-            });
-            //验证表单
-            $("#form-mdfpsw").formValidator();
-
-            //生成年份
-            var htmlYear = "";
-            for(var year=2016;year>=1917;year--){
-                htmlYear += "<option value='"+year+"'>"+year+"</option>";
-            }
-            $("#year").append(htmlYear);
-            //生成月份
-            var htmlMonth = "";
-            for(var month=1;month<=12;month++){
-                htmlMonth += "<option value='"+month+"'>"+month+"</option>";
-            }
-            $("#month").append(htmlMonth);
-            //生成年份
-            var htmlDay = "";
-            for(var day=1;day<=31;day++){
-                htmlDay += "<option value='"+day+"'>"+day+"</option>";
-            }
-            $("#day").append(htmlDay);
-
-            //执行三级联动代码
-            _init_area();
-
-        });
-    </script>
-    <style>
-        #setprofile{
-            margin-top: 10px;
-        }
-        #setprofile .container{
-            border: 1px solid #ccc;
-            padding: 0;
-        }
-        #navbar-left{
-            background-color: #E8F0F7;
-            padding: 0;
-            height: 670px;
-        }
-        #navbar-left h2{
-            font-size:  16px;
-            font-weight: 600;
-            padding: 10px 0 10px 10px;
-            border-bottom: 1px dashed #CCC;
-        }
-        #navbar-left ul li{
-            height: 33px;
-            line-height: 33px;
-            border-bottom: 1px dashed #CCC;
-            padding-left: 10px;
-        }
-        #navbar-left ul li a{
-            display: block;
-            text-decoration: none;
-        }
-        #navbar-left ul li a:hover{
-        }
-        #myTab{
-            margin-top: 5px;
-        }
-        #myTabContent{
-            padding: 10px;
-        }
-        #navbar-left ul li.mdfpic{
-            background-color: #fff;
-        }
-        .head-pic,.profile-info,.mdf-psw{
-            position: absolute;
-            display: none;
-            width: 98%;
-        }
-        .head-pic{
-            padding-top: 15px;
-        }
-        .desc{
-            font-size: 15px;
-            font-weight: 600;
-            padding: 3px 0;
-        }
-        .head{
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-        .upload-area {
-            position: relative;
-            display: inline-block;
-            background: #D0EEFF;
-            border: 1px solid #99D3F5;
-            border-radius: 4px;
-            padding: 4px 12px;
-            overflow: hidden;
-            color: #1E88C7;
-            text-decoration: none;
-            text-indent: 0;
-            text-align: center;
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-        .upload-area input {
-            width: 450px;
-            height: 250px;
-            font-size: 100px;
-            opacity: 0;
-        }
-        #upload:hover{
-            cursor: pointer;
-        }
-        .upload-area i{
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            margin-left: -33px;
-            margin-top: -35px;
-        }
-        #upload-btn i{
-            margin-right: 3px;
-        }
-        .mdf-psw{
-            padding: 15px;
-        }
-        .mdf-psw p{
-            padding: 5px 0;
-            border-bottom: 1px dashed #ccc;
-        }
-        .form-group {
-            height: 40px;
-            line-height: 40px;
-            margin-top: 10px;
-        }
-        .w40{
-            width: 40%;
-        }
-        .input-help.error-message,.input-help.success-message {
-            display: inline-block;
-            margin-left: 15px;
-            position: absolute;
-            left: 280px;
-            top: -8px;
-            width: 107%;
-        }
-        .input-help.success-message p i{
-            color: #5CB85C;
-        }
-        .input-help.error-message p,.input-help.success-message p{
-            border: none;
-            color: #C9302C;
-        }
-        .w40 img{
-            margin-right: 20px;
-        }
-    </style>
+    <script src="js/setProfile.js"></script>
 </head>
 <body>
 <!--引入头部-->
@@ -200,7 +109,7 @@
 <div id="position">
     <div class="container">
         <i class="fa fa-map-marker"></i>
-        <a href="#">李四</a>
+        <a href="#"><?php echo $res_info['name'];?></a>
         >>
         <a href="register.php">完善个人资料</a>
     </div>
@@ -217,7 +126,7 @@
         </div>
         <div class="col-md-10 col-sm-10" style="height: 670px; position: relative;">
             <div class="head-pic" style="display: block;">
-                <form action="" id="upload-pic">
+                <form action="" method="post" id="upload-pic">
                     <div>
                         <h3 class="desc">当前我的头像</h3>
                         <p style="font-size: 12px">如果您还没有设置自己的头像，系统会显示为默认头像，您需要自己上传一张新照片来作为自己的个人头像</p>
@@ -245,24 +154,25 @@
                 </ul>
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade in active" id="basic-data">
-                        <form action="" id="form-basic">
+                        <form action="" method="post" id="form-basic">
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">用户名：</label></div>
                                 <div class="col-md-10 w40">
-                                    李四
+                                    <?php echo $res_info['name'];?>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">真实姓名：</label></div>
                                 <div class="col-md-10 w40">
-                                    <input type="text" name="reallyName" id="reallyName" class="form-control">
+                                    <input type="text" name="reallyName" id="reallyName" class="form-control" value="<?php echo $res_info['reallyName'];?>" placeholder="<?php echo $res_info['reallyName'];?>">
                                     </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">性别：</label></div>
                                 <div class="col-md-10 w40">
                                     <select name="sex" id="sex">
-                                        <option value="0">保密</option>
+                                        <option value="<?php echo $res_info['sex']; ?>"><?php echo $res_info['sex']; ?></option>
+                                        <option value="保密">保密</option>
                                         <option value="男">男</option>
                                         <option value="女">女</option>
                                     </select>
@@ -305,69 +215,79 @@
                             <div class="form-group">
                                 <div class="col-md-2"><label for=""></label></div>
                                 <div class="col-md-10 w40">
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
+                                    <button type="submit" name="subBasic" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="tab-pane fade" id="contact-info">
-                        <form action="" id="form-basic">
+                        <form action="" method="post" id="form-contact">
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">用户名：</label></div>
                                 <div class="col-md-10 w40">
-                                    李四
+                                    <?php echo $res_info['name'];?>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">固定电话：</label></div>
                                 <div class="col-md-10 w40">
-                                    <input type="text" name="fixed-tel" id="fixed-tel" class="form-control">
+                                    <input type="text" name="fixed-tel" value="<?php echo $res_info['fixedTel'];?>" placeholder="<?php echo $res_info['fixedTel'];?>" id="fixed-tel" class="form-control"
+                                           data-regex="^\d{4}-\d{7}$"
+                                           data-regex-message="格式不匹配，如（0778-3142659）"
+                                    >
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">手机：</label></div>
                                 <div class="col-md-10 w40">
-                                    <input type="text" name="phone" id="phone" class="form-control">
+                                    <input type="text" name="phone" value="<?php echo $res_info['phone'];?>" placeholder="<?php echo $res_info['phone'];?>" id="phone" class="form-control"
+                                           data-regex="^1\d{10}$"
+                                           data-regex-message="格式不匹配，如（13378942675）"
+                                    >
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">QQ：</label></div>
                                 <div class="col-md-10 w40">
-                                    <input type="text" name="qq" id="qq" class="form-control">
+                                    <input type="text" name="qq" value="<?php echo $res_info['qq'];?>" placeholder="<?php echo $res_info['qq'];?>" id="qq" class="form-control"
+                                           data-regex="^\d{5,10}$"
+                                           data-regex-message="格式不匹配，如（19873468）"
+                                    >
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">个人主页：</label></div>
                                 <div class="col-md-10 w40">
-                                    <input type="text" name="homepage" id="homepage" class="form-control" value="http://">
+                                    <input type="text" name="homepage" value="<?php echo $res_info['website'];?>" placeholder="<?php echo $res_info['website'];?>" id="homepage" class="form-control" value="http://">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for=""></label></div>
                                 <div class="col-md-10 w40">
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
+                                    <button type="submit" name="subContact" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="tab-pane fade" id="education">
-                        <form action="" id="form-basic">
+                        <form action="" method="post" id="form-education">
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">用户名：</label></div>
                                 <div class="col-md-10 w40">
-                                    李四
+                                    <?php echo $res_info['name'];?>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">毕业学校：</label></div>
                                 <div class="col-md-10 w40">
-                                    <input type="text" name="school" id="school" class="form-control">
+                                    <input type="text" name="school" value="<?php echo $res_info['school'];?>" placeholder="<?php echo $res_info['school'];?>" id="school" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">学历：</label></div>
                                 <div class="col-md-10 w40">
-                                    <select name="degrees" id="degrees ">
+                                    <select name="degrees" id="degrees">
+                                        <option value="<?php echo $res_info['degree']?>"><?php echo $res_info['degree']?></option>
                                         <option value="博士">博士</option>
                                         <option value="硕士">硕士</option>
                                         <option value="本科">本科</option>
@@ -381,47 +301,50 @@
                             <div class="form-group">
                                 <div class="col-md-2"><label for=""></label></div>
                                 <div class="col-md-10 w40">
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
+                                    <button type="submit" name="subEducation" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="tab-pane fade" id="working">
-                        <form action="" id="form-basic">
+                        <form action="" method="post" id="form-working">
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">用户名：</label></div>
                                 <div class="col-md-10 w40">
-                                    李四
+                                    <?php echo $res_info['name'];?>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">公司：</label></div>
                                 <div class="col-md-10 w40">
-                                    <input type="text" name="company" id="company" class="form-control">
+                                    <input type="text" name="company" value="<?php echo $res_info['company'];?>" placeholder="<?php echo $res_info['company'];?>" id="company" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">职业：</label></div>
                                 <div class="col-md-10 w40">
-                                    <input type="text" name="profession" id="profession" class="form-control">
+                                    <input type="text" name="profession" value="<?php echo $res_info['profession'];?>" placeholder="<?php echo $res_info['profession'];?>" id="profession" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">职位：</label></div>
                                 <div class="col-md-10 w40">
-                                    <input type="text" name="job" id="job" class="form-control">
+                                    <input type="text" name="job" value="<?php echo $res_info['job'];?>" placeholder="<?php echo $res_info['job'];?>" id="job" class="form-control">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">年收入：</label></div>
                                 <div class="col-md-10 w40">
-                                    <input type="text" name="income" id="income" class="form-control">
+                                    <input type="text" name="income" value="<?php echo $res_info['income'];?>" placeholder="<?php echo $res_info['income'];?>" id="income" class="form-control"
+                                           data-regex="^[^0-][0-9.]+$"
+                                           data-regex-message="格式不匹配，不能为负数"
+                                    >
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for=""></label></div>
                                 <div class="col-md-10 w40">
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
+                                    <button type="submit" name="subWorking" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
                                 </div>
                             </div>
                         </form>
@@ -430,7 +353,7 @@
             </div>
             <div class="mdf-psw">
                 <p>您必须填写原密码才能修改下面的资料</p>
-                <form action="" id="form-mdfpsw">
+                <form action="" method="post" id="form-mdfpsw">
                     <div class="form-group">
                         <div class="col-md-2"><label for="">旧密码：</label></div>
                         <div class="col-md-10 w40">
@@ -474,13 +397,13 @@
                     <div class="form-group">
                         <div class="col-md-2"><label for=""></label></div>
                         <div class="col-md-10 w40">
-                            <img src="img/yzm.png" alt=""><span style="cursor: pointer;">点击换一张</span>
+                            <img class="yzmpic" style="cursor: pointer;" src="inc/vcode.php" alt="验证码"><span>点击图片换一张</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-2"><label for=""></label></div>
                         <div class="col-md-10 w40">
-                            <button type="submit" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
+                            <button type="submit" name="subMdfpsw" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
                         </div>
                     </div>
                 </form>
