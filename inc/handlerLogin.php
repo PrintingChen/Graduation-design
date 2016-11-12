@@ -13,7 +13,7 @@
             $time = Date('Y-m-d H:i:s', time());
             $sql = "update user set lastLogin='{$time}' where name='{$user}'";
             execute($link, $sql);
-            skip('index.php', 'success', '恭喜你，登录成功^_^');
+            skip('profile.php', 'success', '恭喜你，登录成功^_^');
             exit();
         }else {
             skip('index.php', 'error', '用户名或密码错误^_^');

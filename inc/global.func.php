@@ -124,15 +124,15 @@ EOT;
 	 * @param unknown $msg 提示信息
 	 * @param unknown $icon 图标
 	 * @param unknown $url 跳转地址
+     *
+    <script src="layui/layui.js"></script>
 	 */
     function promptBox($msg, $icon, $url){
         $html = <<<EOT
-                <link rel="stylesheet" href="layui/css/layui.css">
-                <script src="layui/layui.js"></script>
                 <script>
                     layui.use('layer', function(){
                       var layer = layui.layer;
-                      layer.msg('{$msg}',{icon: {$icon},time: 2000}, function(){
+                      layer.msg('{$msg}',{icon: {$icon},time: 1000}, function(){
                             window.location.href="{$url}";
                       });
                     });
@@ -245,7 +245,7 @@ EOT;
      */
     function manage_login_state($link){
         if (isset($_SESSION['manage']['name']) && isset($_SESSION['manage']['psw'])){
-            $sql = "select * from ws_manage where name='{$_SESSION['manage']['name']}' and psw='{$_SESSION['manage']['psw']}'";
+            $sql = "select * from manager where managerName='{$_SESSION['manage']['name']}' and managerPsw='{$_SESSION['manage']['psw']}'";
             $result = execute($link, $sql);
             if (mysqli_num_rows($result) == 1) {
                 return true;
@@ -307,9 +307,9 @@ EOT;
             //把所有的页码按钮全部显示
             for($i=1;$i<=$page_num_all;$i++){//这边的$page_num_all是限制循环次数以控制显示按钮数目的变量,$i是记录页码号
                 if($_GET[$page]==$i){
-                    $html[$i]="<span>{$i}</span>";
+                    $html[$i]="<li class='active'><a href='#'>{$i}</a></li>";
                 }else{
-                    $html[$i]="<a href='{$url}{$i}'>{$i}</a>";
+                    $html[$i]="<li><a href='{$url}{$i}'>{$i}</a></li>";
                 }
             }
         }else{
@@ -324,9 +324,9 @@ EOT;
             }
             for($i=0;$i<$num_btn;$i++){
                 if($_GET[$page]==$start){
-                    $html[$start]="<span>{$start}</span>";
+                    $html[$start]="";//<span>{$start}</span>
                 }else{
-                    $html[$start]="<a href='{$url}{$start}'>{$start}</a>";
+                    $html[$start]="<li><a href='{$url}{$start}'>{$start}</a></li>";
                 }
                 $start++;
             }
@@ -338,26 +338,27 @@ EOT;
                 $key_end=key($html);
                 if($key_first!=1){
                     array_shift($html);
-                    array_unshift($html,"<a href='{$url}=1'>1</a>...");
+                    array_unshift($html,"<li><a href='{$url}=1'>1</a>***</li>");
                 }
                 if($key_end!=$page_num_all){
                     array_pop($html);
-                    array_push($html,"<a href='{$url}={$page_num_all}'>{$page_num_all}</a>...");
+                    array_push($html,"<li><a href='{$url}={$page_num_all}'>{$page_num_all}</a></li>");
                 }
             }
         }
         if($_GET[$page]!=1){
             $prev=$_GET[$page]-1;
-            array_unshift($html,"<a href='{$url}{$prev}'>« 上一页</a>");
+            array_unshift($html,"<li><a href='{$url}{$prev}'>« 上一页</a></li>");
         }
         if($_GET[$page]!=$page_num_all){
             $next=$_GET[$page]+1;
-            array_push($html,"<a href='{$url}{$next}'>下一页 »</a>");
+            array_push($html,"<li><a href='{$url}{$next}'>下一页 »</a></li><li><a href='{$url}{$page_num_all}'>尾页</a></li>");
         }
         $html=implode(' ',$html);
         $data=array(
             'limit'=>$limit,
-            'html'=>$html
+            'html'=>$html,
+            'totalPage'=>$page_num_all
         );
         return $data;
     }
@@ -365,7 +366,7 @@ EOT;
     /**
     *upload() 文件上传函数
     */
-    function upload($save_path,$custom_upload_max_filesize,$key,$type=array('jpg','jpeg','gif','png')){
+    function upload($save_path,$custom_upload_max_filesize,$key,$type=array('jpg','JPG','jpeg','gif','png')){
         $return_data=array();
         //获取phpini配置文件里面的upload_max_filesize值
         $phpini=ini_get('upload_max_filesize');
@@ -401,8 +402,8 @@ EOT;
             $return_data['return']=false;
             return $return_data;
         }
-        if ($_FILES[$key]['error']!=0) {
-            $return_data['error']=$arr_errors[$_FILES['error']];
+        if (@$_FILES[$key]['error']!=0) {
+            @$return_data['error']=$arr_errors[$_FILES['error']];
             $return_data['return']=false;
             return $return_data;
         }
@@ -448,6 +449,23 @@ EOT;
         return $return_data;
     }
 
-
+    /**
+     *get_multiple() 转换单位
+     */
+    function get_multiple($unit){
+        switch ($unit){
+            case 'K':
+                $multiple=1024;
+                return $multiple;
+            case 'M':
+                $multiple=1024*1024;
+                return $multiple;
+            case 'G':
+                $multiple=1024*1024*1024;
+                return $multiple;
+            default:
+                return false;
+        }
+    }
 
 ?>

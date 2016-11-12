@@ -56,5 +56,35 @@
             </a>
         </li>
     </ul>
+    <h2>
+        <span><i class="fa fa-edit"></i></span>
+        版块管理
+    </h2>
+    <ul>
+        <li>
+            <a href="pModuleList.php">
+                <span><i class="fa fa-caret-right"></i></span>
+                父版块列表
+            </a>
+        </li>
+        <li>
+            <a href="sModuleList.php">
+                <span><i class="fa fa-caret-right"></i></span>
+                子版块列表
+            </a>
+        </li>
+        <li>
+            <a href="addParentModule.php">
+                <span><i class="fa fa-caret-right"></i></span>
+                添加父版块
+            </a>
+        </li>
+        <li>
+            <a href="addSubModule.php">
+                <span><i class="fa fa-caret-right"></i></span>
+                添加子版块
+            </a>
+        </li>
+    </ul>
 </div>
 <!-- ../左侧栏导航 -->

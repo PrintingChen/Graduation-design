@@ -1,91 +1,3 @@
-<?php
-    //开启session
-    session_start();
-    //定义常量ON来获取访问页面的权限
-    define('ON', true);
-    //引入公共文件
-    require_once 'inc/common.inc.php';
-    //调用数据库连接函数
-    $link = connect();
-    //判断当前是否为登录状态
-    $member_id = login_state($link);
-    //查询出当前用户的信息
-    $sql_info = "select * from user where id='{$member_id}'";
-    $res_info = fetch_array(execute($link, $sql_info));
-    //引入处理登录信息
-    include_once "inc/handlerLogin.php";
-    //处理提交的基本资料的数据
-    if (isset($_POST['subBasic'])){
-        //将提交的数据插入到数据库当中
-        $birthday = $_POST['year']."年".$_POST['month']."月".$_POST['day']."日";
-        $homeplace = $_POST['birprov'].$_POST['bircity'].$_POST['birdistrict'];
-        $sql_ins = "update user set reallyName='{$_POST['reallyName']}',sex='{$_POST['sex']}',birthday='{$birthday}',homeplace='{$homeplace}',bloodType='{$_POST['bloodtype']}' where id='{$member_id}'";
-        execute($link, $sql_ins);
-        if (mysqli_affected_rows($link)) {
-            promptBox("数据更新成功", 6, "setProfile.php");
-        }else {
-            promptBox("数据更新失败", 5, "setProfile.php");
-        }
-    }
-    //处理提交的联系方式的数据
-    if (isset($_POST['subContact'])){
-        //将提交的数据插入到数据库当中
-        $sql_contact = "update user set fixedTel='{$_POST['fixed-tel']}',phone='{$_POST['phone']}',qq='{$_POST['qq']}',website='{$_POST['homepage']}' where id='{$member_id}'";
-        execute($link, $sql_contact);
-        if (mysqli_affected_rows($link)) {
-            promptBox("数据更新成功", 6, "setProfile.php");
-        }else {
-            promptBox("数据更新失败", 5, "setProfile.php");
-        }
-    }
-    //处理提交的教育情况的数据
-    if (isset($_POST['subEducation'])){
-        //将提交的数据插入到数据库当中
-        $sql_edu = "update user set school='{$_POST['school']}',degree='{$_POST['degrees']}' where id='{$member_id}'";
-        execute($link, $sql_edu);
-        if (mysqli_affected_rows($link)) {
-            promptBox("数据更新成功", 6, "setProfile.php");
-        }else {
-            promptBox("数据更新失败", 5, "setProfile.php");
-        }
-    }
-    //处理提交的工作情况的数据
-    if (isset($_POST['subWorking'])){
-    //将提交的数据插入到数据库当中
-    $sql_working = "update user set company='{$_POST['company']}',profession='{$_POST['profession']}',job='{$_POST['job']}',income='{$_POST['income']}' where id='{$member_id}'";
-    execute($link, $sql_working);
-    if (mysqli_affected_rows($link)) {
-        promptBox("数据更新成功", 6, "setProfile.php");
-    }else {
-        promptBox("数据更新失败", 5, "setProfile.php");
-    }
-}
-    //处理提交的修改密码的数据
-    if (isset($_POST['subMdfpsw'])){
-    //将提交的数据插入到数据库当中
-    check_vcode($_POST['yzm'], $_SESSION['code']);
-    $opsw = md5($_POST['opsw']);
-    $npsw = md5($_POST['npsw']);
-    //将提交过来的旧密码比对数据库里面的密码是否一致
-    $sql_compare = "select * from user where id='{$member_id}' and psw='{$opsw}'";
-    if (nums($link, $sql_compare)) {
-        //开始更新密码
-        $sql_mdfpsw = "update user set psw='{$npsw}' where id='{$member_id}'";
-        execute($link, $sql_mdfpsw);
-        if (mysqli_affected_rows($link)) {
-            //密码修改成功后将原来登录的信息cookie删除掉
-            setcookie('bs[userName]', '', time()-36000);
-            setcookie('bs[psw]', '', time()-36000);
-            promptBox("数据更新成功，请重新登录", 6, "index.php");
-        }else {
-            promptBox("数据更新失败", 5, "setProfile.php");
-        }
-    }else{
-        skip('setProfile.php', 'error', '旧密码错误^_^');
-        exit();
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -96,11 +8,124 @@
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/setProfile.css">
     <script src="js/jquery-1.12.2.min.js"></script>
+    <script src="layui/layui.js"></script>
     <script src="css/bootstrap/js/bootstrap.min.js"></script>
     <script src="js/formValidator.js"></script>
     <script src="js/area.js"></script>
     <script src="js/setProfile.js"></script>
+    <script src="js/common.js"></script>
 </head>
+<?php
+    //开启session
+    session_start();
+    //定义常量ON来获取访问页面的权限
+    define('ON', true);
+    //引入公共文件
+    require_once 'inc/common.inc.php';
+    //调用数据库连接函数
+    $link = connect();
+    //判断当前是否为登录状态
+    if(!($member_id = login_state($link))){
+        promptBox("您还未登录", 5, "index.php");
+        exit;
+    }
+    //查询出当前用户的信息
+    $sql_info = "select * from user where id='{$member_id}'";
+    $res_info = fetch_array(execute($link, $sql_info));
+    //引入处理登录信息
+    include_once "inc/handlerLogin.php";
+    //处理提交的基本资料的数据
+    if (isset($_POST['subBasic'])){
+        //将提交的数据插入到数据库当中
+        $birthday = $_POST['year']."-".$_POST['month']."-".$_POST['day'];
+        $homeplace = $_POST['birprov']."、".$_POST['bircity']."、".$_POST['birdistrict'];
+        $sql_ins = "update user set reallyName='{$_POST['reallyName']}',sex='{$_POST['sex']}',birthday='{$birthday}',homeplace='{$homeplace}',bloodType='{$_POST['bloodtype']}' where id='{$member_id}'";
+        execute($link, $sql_ins);
+        if (mysqli_affected_rows($link)) {
+            promptBox("数据更新成功", 6, "profile.php");
+        }else {
+            promptBox("数据更新失败", 5, "profile.php");
+        }
+    }
+    //处理提交的联系方式的数据
+    if (isset($_POST['subContact'])){
+        //将提交的数据插入到数据库当中
+        $sql_contact = "update user set fixedTel='{$_POST['fixed-tel']}',phone='{$_POST['phone']}',qq='{$_POST['qq']}',website='{$_POST['homepage']}' where id='{$member_id}'";
+        execute($link, $sql_contact);
+        if (mysqli_affected_rows($link)) {
+            promptBox("数据更新成功", 6, "profile.php");
+        }else {
+            promptBox("数据更新失败", 5, "profile.php");
+        }
+    }
+    //处理提交的修改头像的数据
+    if (isset($_POST['subUploadpic'])){
+        //将提交的数据插入到数据库当中
+        //写上服务器上文件系统的路径，而不是url地址
+        $save_path='uploads'.date('/Y/m/d/');
+        $upload=upload($save_path,'8M','upload');
+        if($upload['return']){
+            $query="update user set photo='{$upload['save_path']}' where id={$member_id}";
+            execute($link, $query);
+            if(mysqli_affected_rows($link)==1){
+                promptBox("头像上传成功", 6,"profile.php");
+            }else{
+                promptBox("头像上传失败", 5, "profile.php");
+            }
+        }else{
+            skip("setProfile.php", "error",$upload["error"]);
+            exit();
+        }
+    }
+    //处理提交的教育情况的数据
+    if (isset($_POST['subEducation'])){
+        //将提交的数据插入到数据库当中
+        $sql_edu = "update user set school='{$_POST['school']}',degree='{$_POST['degrees']}' where id='{$member_id}'";
+        execute($link, $sql_edu);
+        if (mysqli_affected_rows($link)) {
+            promptBox("数据更新成功", 6, "profile.php");
+        }else {
+            promptBox("数据更新失败", 5, "profile.php");
+        }
+    }
+    //处理提交的工作情况的数据
+    if (isset($_POST['subWorking'])){
+        //将提交的数据插入到数据库当中
+        $sql_working = "update user set company='{$_POST['company']}',profession='{$_POST['profession']}',job='{$_POST['job']}',income='{$_POST['income']}' where id='{$member_id}'";
+        execute($link, $sql_working);
+        if (mysqli_affected_rows($link)) {
+            promptBox("数据更新成功", 6, "profile.php");
+        }else {
+            promptBox("数据更新失败", 5, "profile.php");
+        }
+    }
+    //处理提交的修改密码的数据
+    if (isset($_POST['subMdfpsw'])){
+        //将提交的数据插入到数据库当中
+        check_vcode($_POST['yzm'], $_SESSION['code']);
+        $opsw = md5($_POST['opsw']);
+        $npsw = md5($_POST['npsw']);
+        //将提交过来的旧密码比对数据库里面的密码是否一致
+        $sql_compare = "select * from user where id='{$member_id}' and psw='{$opsw}'";
+        if (nums($link, $sql_compare)) {
+            //开始更新密码
+            $sql_mdfpsw = "update user set psw='{$npsw}' where id='{$member_id}'";
+            execute($link, $sql_mdfpsw);
+            if (mysqli_affected_rows($link)) {
+                //密码修改成功后将原来登录的信息cookie删除掉
+                setcookie('bs[userName]', '', time()-36000);
+                setcookie('bs[psw]', '', time()-36000);
+                promptBox("数据更新成功，请重新登录", 6, "index.php");
+            }else {
+                promptBox("数据更新失败", 5, "setProfile.php");
+            }
+        }else{
+            skip('setProfile.php', 'error', '旧密码错误^_^');
+            exit();
+        }
+
+    }
+?>
 <body>
 <!--引入头部-->
 <?php include_once "inc/header.inc.php"?>
@@ -126,22 +151,21 @@
         </div>
         <div class="col-md-10 col-sm-10" style="height: 670px; position: relative;">
             <div class="head-pic" style="display: block;">
-                <form action="" method="post" id="upload-pic">
+                <form method="post" id="upload-pic" enctype="multipart/form-data">
                     <div>
                         <h3 class="desc">当前我的头像</h3>
                         <p style="font-size: 12px">如果您还没有设置自己的头像，系统会显示为默认头像，您需要自己上传一张新照片来作为自己的个人头像</p>
                     </div>
-                    <div class="head"><img src="img/noavatar_big.gif" alt=""></div>
+                    <div class="head"><img src="<?php echo $img_url;?>" width="200" height="200"></div>
                     <div class="set-headpic">
                         <h3 class="desc">设置我的新头像</h3>
                         <p style="font-size: 12px">请选择一个新照片进行上传编辑。</p>
                     </div>
                     <div class="upload-area">
-                        <i class="fa fa-plus-square-o fa-5x"></i>
                         <input type="file" name="upload" id="upload">
                     </div>
                     <div>
-                        <button type="submit" class="btn btn-primary" id="upload-btn"><i class="fa fa-check-square-o"></i>提交</button>
+                        <button type="submit" name="subUploadpic" class="btn btn-primary" id="upload-btn"><i class="fa fa-check-square-o"></i>提交</button>
                     </div>
                 </form>
             </div>
@@ -181,13 +205,20 @@
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">生日：</label></div>
                                 <div class="col-md-10 w40">
+                                    <?php
+                                        //将生日分割成数组
+                                        $bir = explode("-", $res_info['birthday']);
+                                    ?>
                                     <select name="year" id="year">
+                                        <option value="<?php //echo $bir[0]?>"><?php //echo $bir[0]?></option>
                                         <option value="">年</option>
                                     </select>
                                     <select name="month" id="month">
+                                        <option value="<?php //echo $bir[1]?>"><?php //echo $bir[1]?></option>
                                         <option value="">月</option>
                                     </select>
                                     <select name="day" id="day">
+                                        <option value="<?php //echo $bir[2]?>"><?php //echo $bir[2]?></option>
                                         <option value="">日</option>
                                     </select>
                                 </div>
@@ -195,15 +226,26 @@
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">出生地：</label></div>
                                 <div class="col-md-10 w40">
-                                    <select name="birprov" id="birprov"></select>
-                                    <select name="bircity" id="bircity"></select>
-                                    <select name="birdistrict" id="birdistrict"></select>
+                                    <?php
+                                        //将出生地分割成数组
+                                        $home = explode("、", $res_info['homeplace']);
+                                    ?>
+                                    <select name="birprov" id="birprov">
+                                        <option value="<?php echo $home[0]?>"><?php echo $home[0]?></option>
+                                    </select>
+                                    <select name="bircity" id="bircity">
+                                        <option value="<?php echo $home[1]?>"><?php echo $home[1]?></option>
+                                    </select>
+                                    <select name="birdistrict" id="birdistrict">
+                                        <option value="<?php echo $home[2]?>"><?php echo $home[2]?></option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">血型：</label></div>
                                 <div class="col-md-10 w40">
                                     <select name="bloodtype" id="bloodtype">
+                                        <option value="<?php echo $res_info['bloodType'];?>"><?php echo $res_info['bloodType'];?></option>
                                         <option value="A">A</option>
                                         <option value="B">B</option>
                                         <option value="O">O</option>

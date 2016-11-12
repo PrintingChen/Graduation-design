@@ -41,6 +41,5 @@
     height: 50px;
 }
 .pagination li{
-    display: inline-block;
-    margin-right: 3px;
+    float: left;
 }

@@ -1,0 +1,158 @@
+@charset "UTF-8";
+/* CSS Document*/
+body {
+    margin: 0;
+    font-family: "Microsoft Yahei",arial,"Hiragino Sans GB",sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    color: #656D78;
+    background-color:#fff;
+    position: relative;
+}
+html {
+    height:100%;
+    margin:0;
+    padding:0;
+    overflow:hidden
+}
+body {
+    height:100%;
+    margin:0;
+    padding:0;
+    overflow:hidden;
+    font-family:"Microsoft Yahei"
+}
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td {
+    margin:0;
+    padding:0;
+}
+img {
+    border:0px;
+}
+a, a:visited {
+    color:#3a3a3a;
+    text-decoration:none;
+}
+ul,li,li ul {
+    list-style:none;
+}
+/*--clearfix---*/
+.clearfix:after {
+    content:".";
+    display:block;
+    height:0;
+    clear:both;
+    visibility:hidden;
+}
+.clearfix {
+    display:inline-block;
+}
+.clearfix {
+    display:block;
+}
+/*--clearfix---*/
+.clear {
+    clear:both;
+}
+#loginpage {
+    background:url('../img/randombga.jpg') center no-repeat;
+}
+#login {
+    width:100%;
+    position:absolute;
+    top:20%;
+}
+#loginpage .main {
+    width:960px;
+    margin:0px auto;
+    height:316px;
+}
+#loginpage .logbox {
+    width:418px;
+    height:316px;
+    background:#fff;
+    position:relative;
+    left:271px;
+    border-radius: 3px;
+}
+#loginpage .header {
+    height:50px;
+    background:#3c4145;
+    color:#fff;
+    border-bottom: 1px solid #E2E2E2;
+    position: relative;
+    font-family: "Hiragino Sans GB","微软雅黑";
+    padding: 0 0 0 20px;
+    line-height:50px;
+    font-size: 22px;
+}
+#loginpage .web_login {
+    width: 418px;
+    position: relative;
+    padding-bottom: 40px;
+}
+#loginform {
+    width: 272px;
+    margin: 0 auto;
+}
+#loginpage .web_login .inputOuter {
+    width: 272px;
+    height: 42px;
+    margin:20px 0px;
+}
+#loginpage .web_login .submit {
+    position: relative;
+    height: 40px;
+}
+#loginpage .web_login .login_button {
+    position: absolute;
+    left: 0;
+    outline: none;
+}
+#loginpage .footer {
+    position: relative;
+    height:25px;
+    line-height:25px;
+    text-align:right;
+}
+#loginpage .footer a {
+    margin:0px 10px;
+    font-family: Tahoma,Verdana,Arial,宋体;
+    color:#666;
+    font-size: 12px;
+}
+#loginpage .footer a:hover {
+    margin:0px 10px;
+    font-family: Tahoma,Verdana,Arial,宋体;
+    color:#3185ae;
+    font-size: 12px;
+}
+.inputOuter{
+    position: relative;
+}
+.inputOuter img{
+    cursor: pointer;
+}
+.rel{
+    text-indent: 25px;
+}
+.abs{
+    display: block;
+    position: absolute;
+    left: 8px;
+    top: 7px;
+    color: #999;
+}
+.form-control{
+    height: 40px;
+}
+#btn{
+    padding: 6px 20px;
+}
+.fa{
+    margin-right: 3px;
+}
+.w70{
+    width: 70%;
+    display: inline-block;
+}

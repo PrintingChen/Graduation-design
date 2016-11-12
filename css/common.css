@@ -166,6 +166,9 @@ body{
     height: 100%;
     margin: 0 3px;
 }
+#header .info ul li a{
+    display: block;
+}
 #header .info ul .headpic{
     padding: 2px;
     background-color: #fff;
@@ -181,7 +184,6 @@ body{
 }
 .person {
     background: url(../img/user_online.gif) no-repeat 0% 8%;
-    width: 50px;
     text-indent: 15px;
 }
 
@@ -199,5 +201,7 @@ body{
     color: #048f04;
     margin-right: 5px;
 }
+
+/*提示页面*/
 
 

@@ -15,7 +15,7 @@
         </h1>
     </div>
     <div class="head-l">
-        <a href="../index.html" class="button button-little bg-green" target="_blank">
+        <a href="../index.php" class="button button-little bg-green" target="_blank">
             <span class="icon-name"><i class="fa fa-home fa-x"></i></span>
             前台首页
         </a>

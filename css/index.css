@@ -1,0 +1,187 @@
+.chartz{
+    height: 64px;
+    line-height: 64px;
+    border-radius: 3px;
+    border: 1px solid #cdcdcd;
+    margin-top: 5px;
+    background-color: #fffffd;
+    color: #666;
+    box-shadow: 1px 1px 2px #ccc;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.chartz em{
+    font-style: normal;
+    color: #444;
+    font-size: 18px;
+}
+.chartz i{
+    color: #4284ce;
+    margin-right: 3px;
+}
+#publish{
+    text-align: right;
+}
+#publish i{
+    color: #fff;
+}
+.infor{
+    margin-top: 5px;
+    overflow: hidden;
+    border: 1px solid #cdcdcd;
+    box-shadow: 1px 1px 2px #ccc;
+    padding: 8px 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.latestpic{
+    font-size: 14px;
+    line-height: 20px;
+    color: #09F;
+    padding:5px 0;
+}
+.wrapper{
+    width: 370px;
+    height: 230px;
+    border: 1px solid #cdcdcd;
+}
+#myCarousel,.carousel-inner{
+    width: 370px;
+    height: 230px;
+}
+#myCarousel .carousel-inner{
+    width: 370px;
+    height: 230px;
+}
+#myCarousel .carousel-inner .item{
+    width: 370px;
+    height: 230px;
+}
+#myCarousel .carousel-inner .item a{
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+#myCarousel .carousel-inner .item a img {
+    width: 370px;
+    height: 230px;
+}
+#myCarArea{
+    padding: 5px 0;
+}
+.rowl{
+    line-height: 25px;
+    border-bottom: 1px dashed #CDCDCD;
+    overflow: hidden;
+}
+.section{
+    float: left;
+    margin-right: 2px;
+    color: #0099FF;
+}
+.publisher{
+    float: right;
+    color: #666;
+}
+.postCont{
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 330px;
+    color: #666;
+}
+.publisher:hover{
+    text-decoration: none;
+}
+.bm{
+    margin-top: 5px;
+    border: 1px solid #CDCDCD;
+    box-shadow: 1px 1px 2px #ccc;
+}
+.bm .bm_h{
+    height: 34px;
+    border-bottom: 1px solid #eee;
+}
+.bm .bm_h h2{
+    height: 100%;
+    line-height: 34px;
+    padding: 0 30px 0 10px;
+    float: left;
+    color: #FFF;
+    text-decoration: none;
+    background: #D9020C;
+    font-weight: 600;
+}
+.bm .bm_h h2 a{
+    display: block;
+    color: #fff;
+    font-size: 14px;
+
+}
+.bm .bm_h .o{
+    float: right;
+    width: 17px;
+    height: 17px;
+    margin-top: 9px;
+    margin-right: 9px;
+    cursor: pointer;
+    background: url("img/collapsed_no.gif");
+}
+/*.bm .bm_h .o img{
+    margin-top: 10px;
+    cursor: pointer;
+}*/
+.bm .bm_h .district_moder{
+    float: right;
+    line-height: 34px;
+    margin-right: 8px;
+    color: #666;
+}
+.bm .bm_h .district_moder a{
+    color: #0099FF;
+}
+.bm .bm_c{
+    padding: 10px 15px;
+    background: #fff;
+}
+#section-table tr{
+    height: 80px;
+}
+#section-table tr td.fl_g{
+    width: 33%;
+    height: 95px;
+    line-height: 80px;
+    float: left;
+    border-top: none;
+    border-bottom: 1px dashed #cdcdcd;
+}
+#section-table .fl_icn_g{
+    float: left;
+    width: 81px;
+}
+#section-table .fl_g .fl_icn_g a{
+    display: block;
+}
+#section-table .fl_g .fl_icn_g a img{
+
+}
+#section-table .fl_g .info-list{
+    float: left;
+    margin-left: 10px;
+    margin-top: 16px;
+}
+#section-table .fl_g .info-list dd em{
+    font-style: normal;
+    font-size: 12px;
+}
+.lastPub{
+    font-size: 12px;
+}
+.desc{
+    float: left;
+    height: 100%;
+    line-height: 33px;
+    padding-left: 3px;
+    font-size: 12px;
+}

@@ -33,3 +33,36 @@
     border: 1px solid #CCC;
     border-top: none;
 }
+#profile .person-info .block{
+    margin-bottom: 15px;
+}
+#profile .person-info .block .mbn{
+    font-size:14px;
+    font-weight: 600;
+}
+.xw0{
+    font-weight: 400;
+}
+.pbm{
+    padding-bottom: 10px;
+    margin-top: 10px;
+    border-bottom: 1px dashed #ccc;
+}
+em{
+    font-style: normal;
+}
+.xg2{
+    color: #666;
+    margin-right: 10px;
+}
+.pipe {
+    margin: 0 5px;
+    color: #CCC;
+}
+.pf_l{
+    overflow: hidden;
+}
+.pf_l li{
+    float: left;
+    width: 33%;
+}
