@@ -1,5 +1,5 @@
 <?php
-    header('Content-type:text/html;charset=utf-8');
+    //header('Content-type:text/html;charset=utf-8');
     //防止非法调用，需设置一个常量来授权
     if (!defined('ON')){
         exit('非法调用！！！');
@@ -76,11 +76,11 @@
             if($i==count($arr_sqls)){
                 return $data;
             }else{
-                $error="sql语句执行失败：<br />&nbsp;数组下标为{$i}的语句:{$arr_sqls[$i]}执行错误<br />&nbsp;错误原因：".mysqli_error($link);
+                $error="sql语句执行失败：&nbsp;数组下标为{$i}的语句:{$arr_sqls[$i]}执行错误<br />&nbsp;错误原因：".mysqli_error($link);
                 return false;
             }
         }else{
-            $error='执行失败！请检查首条语句是否正确！<br />可能的错误原因：'.mysqli_error($link);
+            $error='执行失败！请检查首条语句是否正确！可能的错误原因：'.mysqli_error($link);
             return false;
         }
     }

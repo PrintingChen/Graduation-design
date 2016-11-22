@@ -1,0 +1,13 @@
+th.th3 {
+    width: 23%;
+}
+th.th2 {
+    width: 34%;
+}
+
+#plist tr td{
+    height: 60px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

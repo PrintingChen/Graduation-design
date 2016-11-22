@@ -1,0 +1,248 @@
+.pgt{
+    overflow: hidden;
+    border-bottom: 1px solid #ccc;
+    padding-top: 5px;
+    padding-bottom: 10px;
+}
+#pubBtn{
+    float: left;
+    margin-right: 5px;
+}
+#repBtn{
+    float: left;
+}
+#callback{
+    float: right;
+}
+.fa.fa-edit{
+    margin-right: 3px;
+}
+.fa.fa-mail-reply{
+    margin-right: 3px;
+}
+.fa.fa-reply-all{
+    margin-right: 3px;
+}
+.pbm {
+    padding-top: 10px;
+    padding-bottom: 10px !important;
+}
+.xi2, .xi2 a, .xi3 a {
+    color: #369;
+}
+.pipe {
+    margin: 0 5px;
+    color: #CCC;
+}
+.wrapContent{
+    height: 600px;
+    border: 1px solid #cdcdcd;
+}
+#wcleft{
+    height: 100%;
+    background-color: #e5edf2;
+    padding-left: 0;
+    padding-right: 0;
+}
+#wcright{
+    height: 100%;
+}
+.hm {
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    font-size: 12px;
+}
+.ptn {
+    padding-top: 5px !important;
+}
+.xg1, .xg1 a {
+    color: #999 !important;
+}
+.xi1, .onerror {
+    color: #F26C4F;
+}
+.pls{
+    height: 4px;
+    background-color: #C2D5E3;
+    padding:0;
+    width: 158px;
+    position: absolute;
+    left: 0;
+    top: 40px;
+}
+.pls.plsrep {
+    top: -3px;
+}
+.pls.plsright.prsrep {
+    top: -3px;
+}
+.author{
+    margin-top: 8px;
+    height: 37px;
+    line-height: 37px;
+    border-bottom: 1px dashed #CDCDCD;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+.xw1 {
+    font-weight: 700;
+}
+.avatar {
+    margin: 10px 15px;
+    padding:4px;
+    background-color: #fff;
+    text-align: center;
+    border-radius:3px;
+}
+.avatar a{
+    display: block;
+}
+.avatar a img{
+    border: none;
+    border-radius: 3px;
+}
+.theme{
+    font-size: 12px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+.theme table{
+    width:100%;
+}
+.theme tr td{
+    border-right: 1px solid #cdcdcd;
+    text-align: center;
+    width: 33%;
+    line-height: 22px;
+    color: #666;
+}
+.theme tr td a{
+    color: #369;
+}
+.ptitle{
+    height: 40px;
+    line-height: 40px;
+}
+.ptitle h1{
+    height: 100%;
+    line-height: 45px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #444;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.pls.plsright{
+    width: 800px;
+    color: #E5EDF2;
+}
+.authi{
+    margin-top: 8px;
+    height: 33px;
+    line-height: 35px;
+    border-bottom: 1px dashed #CDCDCD;
+    padding-left: 0px;
+    padding-right: 0px;
+    font-size: 12px;
+}
+.authi.authirep {
+    margin-top: 12px;
+}
+.authicn {
+    cursor: pointer;
+    width: 16px;
+}
+.vm {
+    vertical-align: middle;
+}
+.authi em{
+    font-style: normal;
+}
+.floor{
+    float: right;
+}
+.pcontent{
+    font-size: 15px;
+    height: 480px;
+    overflow: hidden;
+}
+.pcontent.pcontentrep {
+    height: 515px;
+}
+.po {
+    border-top: 1px dashed #CDCDCD;
+    line-height: 36px;
+}
+.quoteBtn{
+    display: inline-block;
+    text-indent: 22px;
+    background: url("../img/fastreply.gif") no-repeat 0 center;
+}
+.fastpub-avatar{
+    margin-top: 10px;
+}
+.fastpub{
+    margin-top: 5px;
+    border: 1px solid #cdcdcd;
+}
+#fastpub-left{
+    height: 250px;
+    background-color: #e5edf2;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center;
+}
+#fastpub-left a{
+    display: inline-block;
+    padding: 4px;
+    background-color: #fff;
+    border-radius: 3px;
+    position: relative;
+}
+#fastpub-left a img{
+    border-radius: 3px;
+}
+#fastpub-right{
+    padding: 15px;
+}
+.w15{
+    width: 15%;
+    display: inline-block;
+}
+.yzmpic{
+    cursor: pointer;
+}
+
+.isLogin{
+    width: 762px;
+    height:100px;
+    text-align: center;
+    line-height:100px;
+    position: absolute;
+    left: 16px;
+    top: 66px;
+    background-color: #fff;
+}
+
+.quote{
+    padding: 8px;
+    padding-left: 35px;
+    background: url("../img/icon_quote_s.gif") no-repeat;
+    background-color: #f5f5f5;
+    background-position: 2px 1px;
+}
+.quote h2{
+    font-size: 14px;
+    font-weight:700;
+    padding: 5px 0;
+}
+.quote p{
+    padding-left: 10px;
+}
+.block{
+    display: inline-block;
+    background: url("../img/icon_quote_e.gif") no-repeat 100% 100%;
+    padding-right: 35px;
+}

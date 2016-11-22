@@ -380,6 +380,8 @@
                                     <input type="text" name="income" value="<?php echo $res_info['income'];?>" placeholder="<?php echo $res_info['income'];?>" id="income" class="form-control"
                                            data-regex="^[^0-][0-9.]+$"
                                            data-regex-message="格式不匹配，不能为负数"
+                                           data-greaterthan="10"
+                                           data-greaterthan-message="不能小于10"
                                     >
                                 </div>
                             </div>

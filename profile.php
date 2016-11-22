@@ -25,7 +25,12 @@
         promptBox("您还未登录", 5, "index.php");
         exit;
     }
-
+    //查询当前用户的帖子总数
+    $sql_total = "select * from post where postuid={$member_id}";
+    $count = nums($link, $sql_total);
+    //查询当前用户的回帖总数
+    $sql_reply_total = "select * from reply where ruid={$member_id}";
+    $reply_count = nums($link, $sql_reply_total);
 ?>
 <body>
 <!--引入头部-->
@@ -55,9 +60,9 @@
                 <ul class="pbm">
                     <li>
                         <em class="xg2">统计信息</em>
-                        <a href="#">帖子数 0</a>
+                        <a href="#">帖子数 <?php echo $count;?></a>
                         <span class="pipe">|</span>
-                        <a href="#">回帖数 1</a>
+                        <a href="#">回帖数 <?php echo $reply_count;?></a>
                     </li>
                 </ul>
                 <ul class="pbm pf_l">

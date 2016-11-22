@@ -39,6 +39,12 @@
     padding: 0;
     line-height: 50px;
     height: 50px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.ae a{
+    color: #2366A8;
 }
 .pagination li{
     float: left;

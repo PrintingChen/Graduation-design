@@ -17,6 +17,13 @@
 			var val = this.val();
 			var confirmVal = $(rules).val();
 			return val===confirmVal;
+		},
+		"greaterthan" : function (rules) {
+			alert(1);
+			return Number(this.val()) > Number(this.data("greaterthan"));
+		},
+		"lessthan" : function (rules) {
+			return Number(this.val()) < Number(this.data("lessthan"));
 		}
 	};
 	//通过jquery插件规范fn接口创建名叫plug的插件

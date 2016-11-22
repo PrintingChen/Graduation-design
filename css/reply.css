@@ -1,0 +1,24 @@
+.pc{
+    border: 1px solid #ccc;
+    margin-top: 5px;
+    padding: 20px 15px;
+    background-color: #F9F9F9;
+    font-style: normal;
+}
+.pc p{
+    font-weight:700;
+}
+.pc-title{
+    padding: 5px 45px;
+}
+#yzm, #reply{
+    font-style: normal;
+}
+
+.original-post{
+    padding-bottom: 5px;
+}
+.original-post .c{
+    padding-left: 45px;
+    padding-top: 5px;
+}

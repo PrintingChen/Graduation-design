@@ -11,11 +11,13 @@
     }
     if (isset($_COOKIE['bs']['userName']) || isset($_COOKIE['bs']['psw'])) {
         //promptBox("退出成功", 6, "index.php");
-        skip('index.php', 'success', '退出成功^_^');
-        exit();
+        //skip('index.php', 'success', '退出成功^_^');
+        //exit();
+        echo 1;
     }else{
         //promptBox("退出失败", 5, "index.php");
-        skip('index.php', 'error', '退出失败^_^');
-        exit();
+        //skip('index.php', 'error', '退出失败^_^');
+        //exit();
+        echo 0;
     }
 ?>

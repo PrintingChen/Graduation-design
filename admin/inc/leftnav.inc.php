@@ -86,5 +86,23 @@
             </a>
         </li>
     </ul>
+    <h2>
+        <span><i class="fa fa-edit"></i></span>
+        内容管理
+    </h2>
+    <ul>
+        <li>
+            <a href="postList.php">
+                <span><i class="fa fa-caret-right"></i></span>
+                帖子列表
+            </a>
+        </li>
+        <li>
+            <a href="replyList.php">
+                <span><i class="fa fa-caret-right"></i></span>
+                回复列表
+            </a>
+        </li>
+    </ul>
 </div>
 <!-- ../左侧栏导航 -->

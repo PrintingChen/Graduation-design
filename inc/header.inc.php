@@ -1,6 +1,6 @@
 <div id="header">
     <div class="container" style="width: 960px;padding: 0;">
-        <div class="logo">logo</div>
+        <div class="logo"><a href="index.php"><img src="img/logo.png" height="85"></a></div>
         <div class="info">
             <?php
                 //头像地址
@@ -23,7 +23,7 @@
                     $res_info = fetch_array(execute($link, $sql_info));
                     $html = <<<EOT
                         <ul>
-                            <li class="person"><a href="#"><strong>{$res_info['name']}</strong></a></li>|
+                            <li class="person"><a href="profile.php"><strong>{$res_info['name']}</strong></a></li>|
                             <li><a href="#">我的帖子</a></li> |
                             <li><a href="setProfile.php">设置</a></li> |
                             <li><a class="logout" href="#">退出</a></li> 
@@ -52,7 +52,7 @@ EOT;
                                         <td style="text-align: left;text-indent: 5px;">密码：</td>
                                         <td><input type="password" name="psw" id="psw"></td>
                                         <td style="padding-right: 10px;border-right: 1px solid #eee;"><button type="submit" name="sublogin" id="sub-btn">登录</button></td>
-                                        <td style="padding-left: 10px;"><a href="register.php" target="_blank" id="login">立即注册</a></td>
+                                        <td style="padding-left: 10px;"><a href="register.php" id="login">立即注册</a></td>
                                     </tr>
                                 </table>
                             </div>
@@ -61,15 +61,6 @@ EOT;
                     echo $html;
                 }
             ?>
-
-            <!--登录之后-->
-            <!--<ul>
-                <li class="person"><a href="#"><strong>李四</strong></a></li>|
-                <li><a href="#">我的帖子</a></li> |
-                <li><a href="setProfile.php">设置</a></li> |
-                <li><a href="#">退出</a></li> |
-                <li class="headpic"><a href="profile.php"><img src="img/noavatar_small.gif" alt="头像"></a></li>
-            </ul>-->
         </div>
     </div>
 </div>

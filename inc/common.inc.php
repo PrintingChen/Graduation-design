@@ -1,6 +1,5 @@
 <?php
-    
-    header("content-type:text/html;charset=utf-8;");
+    //header("content-type:text/html;charset=utf-8;");
     //防止非法调用，需设置一个常量来授权
     if (!defined('ON')){
         exit('非法调用^_^');

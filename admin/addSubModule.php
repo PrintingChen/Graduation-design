@@ -44,7 +44,7 @@
             $sql_ins = "insert into sub_module(smoduleName, tParenModuleId, smodulePic, smoduleDesc) values('{$_POST['smoduleName']}', '{$_POST['tpmoduleName']}', '{$upload['save_path']}', '{$smoduleDesc}')";
             execute($link, $sql_ins);
             if (mysqli_affected_rows($link)) {
-                promptBox('添加成功', 6,'addSubModule.php');
+                promptBox('添加成功', 6,'sModuleList.php');
             }else {
                 promptBox('添加失败', 5,'addSubModule.php');
                 exit();

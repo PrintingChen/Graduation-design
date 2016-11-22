@@ -132,7 +132,7 @@ EOT;
                 <script>
                     layui.use('layer', function(){
                       var layer = layui.layer;
-                      layer.msg('{$msg}',{icon: {$icon},time: 1000}, function(){
+                      layer.msg('{$msg}',{icon: {$icon},time: 1500}, function(){
                             window.location.href="{$url}";
                       });
                     });
@@ -348,7 +348,7 @@ EOT;
         }
         if($_GET[$page]!=1){
             $prev=$_GET[$page]-1;
-            array_unshift($html,"<li><a href='{$url}{$prev}'>« 上一页</a></li>");
+            array_unshift($html,"<li><a href='{$url}1'>首页</a></li><li><a href='{$url}{$prev}'>« 上一页</a></li>");
         }
         if($_GET[$page]!=$page_num_all){
             $next=$_GET[$page]+1;
@@ -467,5 +467,32 @@ EOT;
                 return false;
         }
     }
-
+    /*格式化时间*/
+    function tranTime($time) {
+        $rtime = date("m-d H:i",$time);
+        $htime = date("H:i",$time);
+        $time = time() - $time;
+        if ($time < 60) {
+            $str = '刚刚';
+        }
+        elseif ($time < 60 * 60) {
+            $min = floor($time/60);
+            $str = $min.'分钟前';
+        }
+        elseif ($time < 60 * 60 * 24) {
+            $h = floor($time/(60*60));
+            $str = $h.'小时前 '.$htime;
+        }
+        elseif ($time < 60 * 60 * 24 * 3) {
+            $d = floor($time/(60*60*24));
+            if($d==1)
+                $str = '昨天 '.$rtime;
+            else
+                $str = '前天 '.$rtime;
+        }
+        else {
+            $str = $rtime;
+        }
+        return $str;
+    }
 ?>

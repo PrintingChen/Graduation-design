@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="../font/css/font-awesome.min.css">
     <script src="../js/jquery-1.12.2.min.js"></script>
+    <script src="../layui/layui.js"></script>
     <script src="../js/formValidator.js"></script>
     <script src="js/admin-common.js"></script>
     <script>

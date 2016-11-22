@@ -1,6 +1,3 @@
-<?php
-
-?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,12 +8,38 @@
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/addUser.css">
     <script src="../js/jquery-1.12.2.min.js"></script>
+    <script src="../layui/layui.js"></script>
     <script src="../js/formValidator.js"></script>
     <script src="js/admin-common.js"></script>
     <script>
         $(function(){
             //验证表单
             $("#form-mdfpsw").formValidator();
+            //ajax添加用户
+            $("#btn-adduser").on("click", function () {
+                layui.use("layer", function () {
+                    var layer = layui.layer;
+                    $.ajax({
+                        type : "post",
+                        url : "addUserHandle.php",
+                        data : $("#form-mdfpsw").serialize(),
+                        success : function (response) {
+                            if(response == "empty"){
+                                layer.msg("数据不能为空", {icon : 5, time : 800});
+                            }else if(response == "useryes"){
+                                layer.msg("此用户已存在", {icon : 5, time : 800});
+                            }else if(response == "ok"){
+                                layer.msg("用户添加成功", {icon : 6, time : 800});
+                                setTimeout(function () {
+                                    window.location.href = "userList.php";
+                                }, 1000);
+                            }else if(response == "no"){
+                                layer.msg("用户添加失败", {icon : 5, time : 800});
+                            }
+                        }
+                    });
+                });
+            });
         });
     </script>
 </head>
@@ -32,7 +55,7 @@
     <div class="panel admin-panel">
         <div class="panel-head"><strong><span class="fa fa-plus-square-o"></span> 添加用户</strong></div>
         <div class="body-content">
-            <form action="" id="form-mdfpsw">
+            <form id="form-mdfpsw">
                 <div class="form-group" style="overflow: hidden;">
                     <div class="info"><label for="">用户名：</label></div>
                     <div class="field">
@@ -45,7 +68,7 @@
                 <div class="form-group" style="overflow: hidden;">
                     <div class="info"><label for="">密码：</label></div>
                     <div class="field">
-                        <input type="password" id="password" class="form-control w50" placeholder="请输入密码"
+                        <input type="password" name="password" id="password" class="form-control w50" placeholder="请输入密码"
                                data-notempty="true"
                                data-notempty-message="密码不能为空"
                                data-regex="^\w+$"
@@ -56,7 +79,7 @@
                 <div class="form-group" style="overflow: hidden;">
                     <div class="info"><label for="">确认密码：</label></div>
                     <div class="field">
-                        <input type="password" class="form-control w50" placeholder="请再次输入密码"
+                        <input type="password" name="repassword" class="form-control w50" placeholder="请再次输入密码"
                                data-notempty="true"
                                data-notempty-message="确认密码不能为空"
                                data-equalto="#password"
@@ -67,7 +90,7 @@
                 <div class="form-group" style="overflow: hidden;">
                     <div class="info"><label for="">Email：</label></div>
                     <div class="field">
-                        <input type="email" class="form-control w50" placeholder="请输入邮箱地址"
+                        <input type="email" name="email" class="form-control w50" placeholder="请输入邮箱地址"
                                data-notempty="true"
                                data-notempty-message="邮箱地址不能为空"
                                data-regex="^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$"
@@ -76,18 +99,9 @@
                     </div>
                 </div>
                 <div class="form-group" style="overflow: hidden;">
-                    <div class="info"><label for="">用户头衔：</label></div>
-                    <div class="field">
-                        <select name="level" id="level" class="form-control w50">
-                            <option class="lh30" value="0">普通用户</option>
-                            <option value="1">版块版主</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group" style="overflow: hidden;">
                     <div class="info"><label for=""></label></div>
                     <div class="field">
-                        <button class="btn btn-info btn-custom"><i class="fa fa-check-square-o custom"></i>提交</button>
+                        <button type="button" id="btn-adduser" class="btn btn-info btn-custom"><i class="fa fa-check-square-o custom"></i>提交</button>
                     </div>
                 </div>
             </form>

@@ -41,7 +41,7 @@
         $sql_ins = "insert into parent_module(pmoduleName, pmoduleDesc, moderatorId) values('{$_POST['pmoduleName']}', '{$pmoduleDesc}', '{$_POST['addModerator']}')";
         execute($link, $sql_ins);
         if (mysqli_affected_rows($link)) {
-            promptBox('添加成功', 6,'addParentModule.php');
+            promptBox('添加成功', 6,'pModuleList.php');
         }else {
             promptBox('添加失败', 5,'addParentModule.php');
             exit();

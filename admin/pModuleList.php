@@ -27,16 +27,71 @@
                     }
                 });
             });
-            //
-            $(".delPMBtn").on("click", function () {
-                $this = $(this);
-                layui.use("layer", function () {
-                    var layer = layui.layer;
-                    //layer.confirm("确定要删除吗？", {icon : 3, title: "提示"}, function (index) {
-                        //console.log("delPModule.php?pid="+$this.attr('pid')+"");
-                        //$this.attr("href", "delPModule.php?pid="+$this.attr('pid')+"");
-                        //layer.close(index);
-                    //});
+
+            //layui组件
+            layui.use("layer", function () {
+                var layer = layui.layer;
+                //删除单条记录
+                $(".delPMBtn").on("click", function () {
+                    $this = $(this);
+                    layer.confirm("确定要删除吗？", {icon : 3, title: "提示"}, function (index) {
+                        $pid = $this.attr('pid');
+                        window.location.href = "delPModule.php?pid="+$pid+"";
+                        layer.close(index);
+                    });
+                });
+
+                //删除多条记录
+                $("#delAll").on("click", function () {
+                    layer.confirm("确定要删除吗？", {icon : 3, title: "提示"}, function (index) {
+                        $.ajax({
+                            type : "post",
+                            url : "delSelectParentModule.php",
+                            data : $("#sml").serialize(),
+                            success : function (response) {
+                                if(response == "1"){
+                                    layer.msg("批量删除成功", {icon : 6, time: 1500});
+                                    setTimeout(function () {
+                                        window.location.href = "pModuleList.php";
+                                    }, 800);
+                                }else {
+                                    layer.msg("批量删除失败", {icon : 5, time: 1500});
+                                    setTimeout(function () {
+                                        window.location.href = "pModuleList.php";
+                                    }, 800);
+                                }
+                            }
+                        });
+                        layer.close(index);
+                    });
+                });
+
+                //ajax获取搜索条件的数据
+                //父版块数据
+                $.ajax({
+                    type : "post",
+                    url : "getPMData.php",
+                    dataType : "json",
+                    success : function (response) {
+                        $str = "";
+                        for (var $key in response){
+                            $str += "<option>"+response[$key]+"</option>";
+                        }
+                        $("#pmName").append($str);
+                    }
+                });
+                //版主的信息
+                $.ajax({
+                    type : "post",
+                    url : "getModerData.php",
+                    dataType : "json",
+                    success : function (response) {
+                        $str = "";
+                        for (var $key in response){
+                            $str += "<option>"+response[$key]+"</option>";
+                        }
+                        $("#moder").append($str);
+                    }
                 });
             });
         });
@@ -44,7 +99,7 @@
 </head>
 <?php
     //开启session
-    session_start();
+    //session_start();
     //定义常量ON来获取访问页面的权限
     define('ON', true);
     //引入公共文件
@@ -54,6 +109,12 @@
     //查询出父版块的信息
     $sql_pm = "select * from parent_module";
     $res_pm = execute($link, $sql_pm);
+    //计算父版块的数量
+    $nums_pm = nums($link, $sql_pm);
+    //父版块分页
+    $page = page($nums_pm, 2);
+    $sql_page = "select * from parent_module order by pid asc {$page['limit']}";
+    $res_page = execute($link, $sql_page);
 ?>
 <body>
 <!--引入头部-->
@@ -64,7 +125,7 @@
 <?php include_once 'inc/position.inc.php';?>
 <!--主体部分-->
 <div class="admin">
-    <form action="">
+    <form id="sml" action="pModuleSearch.php">
         <div class="panel admin-panel">
             <div class="panel-head"><strong><span class="fa fa-list"></span> 父版块列表</strong></div>
             <div class="padding border-bottom">
@@ -73,24 +134,16 @@
                     <li>
                         <select name="pmName" id="pmName" class="form-control">
                             <option value="">请选择版块名称</option>
-                            <option value="前端开发">前端开发</option>
-                            <option value="前端开发">后台开发</option>
                         </select>
                     </li>
                     <li>按版主搜索：</li>
                     <li>
                         <select name="moder" id="moder" class="form-control">
                             <option value="">请选择版主名称</option>
-                            <option value="张三">张三</option>
-                            <option value="张三">李四</option>
                         </select>
                     </li>
-                    <li>按关键字搜索：</li>
                     <li>
-                        <input type="text" class="form-control" name="keywords" id="keywords" placeholder="请输入关键字">
-                    </li>
-                    <li>
-                        <button class="btn btn-default button btn-c"><i class="fa fa-search custom"></i>搜索</button>
+                        <button name="search" class="btn btn-default button btn-c"><i class="fa fa-search custom"></i>搜索</button>
                     </li>
                 </ul>
             </div>
@@ -107,7 +160,7 @@
                     <tbody>
                     <?php
                         //输出所以的父版块
-                        while ($data_pm = fetch_array($res_pm)){
+                        while ($data_pm = fetch_array($res_page)){
                             //查询出版块对应的版主信息
                             $sql_moder = "select * from user where id={$data_pm['moderatorId']}";
                             $res_moder = execute($link, $sql_moder);
@@ -120,13 +173,12 @@
                             }
                     ?>
                         <tr>
-                            <td><input type="checkbox" id="check" name="checkbox">&nbsp;<?php echo $data_pm['pid'];?></td>
+                            <td><input type="checkbox" value="<?php echo $data_pm['pid']?>" id="check" name="del[]">&nbsp;<?php echo $data_pm['pid'];?></td>
                             <td><?php echo $data_pm['pmoduleName'];?></td>
                             <td><?php echo $moder;?></td>
                             <td>
-                                <!--delPModule.php?pid=//echo $data_pm['pid'];-->
-                                <a href="#" class="btn-primary btn"><i class="fa fa-edit"></i>修改</a>
-                                <a pid="<?php echo $data_pm['pid'];?>" class="btn-danger btn delPMBtn"><i class="fa fa-trash-o"></i>删除</a>
+                                <a href="pModuleModify.php?pid=<?php echo $data_pm['pid'];?>" class="btn-primary btn"><i class="fa fa-edit"></i>修改</a>
+                                <a href="#" pid="<?php echo $data_pm['pid'];?>" class="btn-danger btn delPMBtn"><i class="fa fa-trash-o"></i>删除</a>
                             </td>
                             <td></td>
                             <td></td>
@@ -136,21 +188,17 @@
                             <td colspan="6" style="text-align: left; padding-left: 13px;">
                                 <a href="#" class="btn btn-primary" id="selectAll">全选</a>
                                 <a href="#" class="btn btn-primary" id="selectReverse">反选</a>
-                                <a href="#" class="btn-danger btn"><i class="fa fa-trash-o"></i>删除所选</a>
+                                <button type="button" class="btn-danger btn" id="delAll" name="delAll"><i class="fa fa-trash-o"></i>删除所选</button>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="6">
+                            <td colspan="6" style="position: relative;">
                                 <ul class="pagination" style="margin-bottom: 0;">
-                                    <li><a href="#">上一页</a></li>
-                                    <li class="active"><a href="#">1</a></li>
-                                    <li><a href="#">2</a></li>
-                                    <li><a href="#">3</a></li>
-                                    <li><a href="#">4</a></li>
-                                    <li><a href="#">5</a></li>
-                                    <li><a href="#">下一页</a></li>
-                                    <li><a href="#">尾页</a></li>
+                                    <?php
+                                        echo $page['html'];
+                                    ?>
                                 </ul>
+                                <span style="position: absolute;margin-left: 20px;top:12px;color:#428bca;">第 <?php echo $_GET['page']?> 页，共 <?php echo $page['totalPage']?> 页</span>
                             </td>
                         </tr>
                     </tbody>

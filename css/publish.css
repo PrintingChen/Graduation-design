@@ -1,0 +1,38 @@
+.position {
+    margin: 2px 0;
+    height: 29px;
+    border: none;
+    line-height: 29px;
+}
+.position .z{
+    padding-right: 10px;
+    float: left;
+}
+.nvhm{
+    width: 16px;
+    overflow: hidden;
+    color: #488FCE;
+    font-size: 16px;
+}
+.position .z em{
+    width: 20px;
+    margin: 0 3px;
+    font-style: normal;
+    overflow: hidden;
+    color: #999;
+}
+.w25{
+    width: 25%;
+}
+.w35{
+    width: 35%;
+}
+.rows{
+    margin: 5px 0;
+}
+.rows.post-content{
+    /*border: 1px solid #ccc;*/
+}
+.posting{
+    margin-top: 10px;
+}

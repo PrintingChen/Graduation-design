@@ -246,6 +246,9 @@ strong{
     padding: 10px 15px;
     border-radius: 4px 4px 0 0;
     border-bottom: solid 1px #ddd;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 .panel-head strong{
     font-weight: bold;
@@ -284,6 +287,9 @@ strong{
 .w50{
     width: 25%;
     float: left;
+}
+.w45{
+    width: 45%;
 }
 .input-help{
     line-height: 35px;

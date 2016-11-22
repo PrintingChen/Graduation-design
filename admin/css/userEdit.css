@@ -2,3 +2,6 @@
     width: 20%;
     vertical-align: middle;
 }
+.table>tbody>tr>td{
+    line-height: 35px;
+}

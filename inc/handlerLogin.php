@@ -13,11 +13,12 @@
             $time = Date('Y-m-d H:i:s', time());
             $sql = "update user set lastLogin='{$time}' where name='{$user}'";
             execute($link, $sql);
-            skip('profile.php', 'success', '恭喜你，登录成功^_^');
-            exit();
+            promptBox("欢迎您回来，现在将转入登录前页面", 6, "index.php");
+            //skip('profile.php', 'success', '恭喜你，登录成功^_^');
+            //exit();
         }else {
-            skip('index.php', 'error', '用户名或密码错误^_^');
-            exit();
+            promptBox("用户名或密码错误", 5, "index.php");
+            //exit();
         }
     }
 ?>
