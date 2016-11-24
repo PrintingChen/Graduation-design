@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>引用回复</title>
+    <title>编辑帖子</title>
     <link rel="stylesheet" href="font/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/publish.css">
-    <link rel="stylesheet" href="css/reply.css">
     <script src="js/jquery-1.12.2.min.js"></script>
     <script src="kindeditor/kindeditor-all-min.js"></script>
     <script src="kindeditor/lang/zh-CN.js"></script>
@@ -25,37 +24,27 @@
     //调用数据库连接函数
     $link = connect();
     //判断当前是否为登录状态
-    if(!($member_id = login_state($link))){
-        promptBox("您还未登录，无法回复帖子", 5, "index.php");
-        exit;
-    }
+    $member_id = login_state($link);
     //引入处理登录信息
     include_once "inc/handlerLogin.php";
-    //判断回复对应帖子的postId是否合法
-    if (!isset($_GET['postId']) || !is_numeric($_GET['postId'])) {
-        promptBox("回复帖子postId不合法", 5, "index.php");
+    //根据传过来的回复信息rid是否合法
+    if (!isset($_GET['rid']) || !is_numeric($_GET['rid'])){
+        promptBox('rid传参错误', 5, 'index.php');
+        exit;
+    };
+    //查询是否存在此条回复信息
+    $sql_reply = "select * from reply where rid={$_GET['rid']}";
+    $data_reply = fetch_array(execute($link, $sql_reply));
+    if (nums($link, $sql_reply) == 0) {
+        promptBox('这条回复信息不存在', 5, 'index.php');
         exit;
     }
-    //判断引用回复帖子的quoteId是否合法
-    if (!isset($_GET['quoteId']) || !is_numeric($_GET['quoteId'])){
-        promptBox("引用回复quotId不合法", 5, "index.php");
-        exit;
-    }
-    //查询引用回复对应帖子的信息
-    $sql_re_post = "select * from post,user where postId={$_GET['postId']} and user.id=postuid";
-    $data_re_post = fetch_array(execute($link, $sql_re_post));
-
-    //查询是否存在此条引用回复的信息
-    $sql_post = "select * from user u,reply rep where rid={$_GET['quoteId']} and ruid=u.id";
-    $res_post = execute($link, $sql_post);
-    $data_post = fetch_array($res_post);
-    if (mysqli_num_rows($res_post) != 1) {
-        promptBox("回复的帖子不存在", 5, "index.php");
-        exit;
-    }
-    //使用计算在这一条回复之前（包括这一条在内）的所有的记录数来算出楼层数
-    $sql = "select * from reply where tpostId={$_GET['postId']} and rid<={$_GET['quoteId']}";
-    $floor = nums($link, $sql);
+    //查询是否存在此条回复信息对应的帖子
+    $sql_post = "select * from post where postId={$data_reply['tpostId']}";
+    $data_post = fetch_array(execute($link, $sql_post));
+    //查询编辑的回复信息对应的子版块，父版块，等信息
+    $sq_msg = "select * from sub_module sm,parent_module pm where sm.sid={$data_post['tsmoduleId']} and pm.pid=sm.tParenModuleId";
+    $data_msg = fetch_array(execute($link, $sq_msg));
 ?>
 <body>
 <!--引入头部-->
@@ -66,27 +55,30 @@
     <div class="position">
         <div class="z">
             <a href="index.php" class="nvhm"><i class="fa fa-home"></i></a>
-            <em><i class='fa fa-angle-right'></i>
-                引用回复
+            <em><i class='fa fa-angle-right'></i></em>
+            <a href='pModuleList.php?pid=<?php echo $data_msg['pid'];?>'><?php echo $data_msg['pmoduleName'];?></a>
+            <em><i class='fa fa-angle-right'></i></em>
+            <a href='sModuleList.php?sid=<?php echo $data_msg['sid'];?>'><?php echo $data_msg['smoduleName'];?></a>
+            <em><i class='fa fa-angle-right'></i></em>
+            <a href='postShow.php?postId=<?php echo $_GET['postId'];?>&sid=<?php echo $data_msg['sid'];?>'><?php echo $data_post['postTitle'];?></a>
+            <em><i class='fa fa-angle-right'></i></em>
+            编辑回复
         </div>
     </div>
-    <form action="" id="reply-form">
+    <form action="" id="publish-form">
         <div class="form-main">
             <ul class="nav nav-tabs" id="">
-                <li class="active"><a href="#publish-cont" data-toggle="tab" style="font-style: normal;">回复帖子</a></li>
+                <li class="active"><a href="#publish-cont" data-toggle="tab">编辑回复</a></li>
             </ul>
-            <div class="pc">
-                <div class="original-post">
-                    <strong>楼主原帖：<?php echo $data_re_post['name'];?> 发表于 <?php echo tranTime(strtotime($data_re_post['postTime']));?></strong><br>
-                    <div class="c"><?php echo $data_re_post['postContent'];?></div>
-                </div>
-                <p style="font-weight: 700;">引用回复 <?php echo $floor;?> 楼 <span> <?php echo $data_post['name'];?></span> 发表于 <?php echo tranTime(strtotime($data_post['rtime']));?></p>
-                <div class="pc-title"><?php echo nl2br($data_post['rcontent']);?></div>
-            </div>
             <div class="tab-content">
                 <div class="tab-pane fade in active" id="publish-cont">
+                    <div class="rows original">
+                        <strong>原帖标题：</strong><?php echo $data_post['postTitle'];?>
+                    </div>
                     <div class="rows post-content">
-                        <textarea name="content" id="content"></textarea>
+                        <textarea name="content" id="content">
+                            <?php echo $data_reply['rcontent'];?>
+                        </textarea>
                     </div>
                 </div>
             </div>
@@ -95,7 +87,7 @@
                 <img style="cursor: pointer;" src="inc/vcode.php" class="yzmpic" title="点击刷新验证码">
             </div>
             <div class="posting">
-                <button type="button" postId="<?php echo $_GET['postId'];?>" quoteId="<?php echo $_GET['quoteId'];?>" class="btn btn-primary" id="reply"><i class="fa fa-edit"></i>发表回复</button>
+                <button type="button" rid="<?php echo $_GET['rid'];?>" postId="<?php echo $data_post['postId'];?>" sid="<?php echo $data_msg['sid'];?>" class="btn btn-primary" id="replyEditBtn"><i class="fa fa-edit"></i>编辑保存</button>
             </div>
         </div>
     </form>
@@ -121,10 +113,10 @@
     $(".yzmpic").on("click",function(){
         $(this).attr("src","inc/vcode.php?key="+Math.random()*Math.pow(10,17)+"");
     });
-    //回复帖子
+    //发表帖子
     layui.use("layer", function () {
         var layer = layui.layer;
-        $("#reply").click(function () {
+        $("#replyEditBtn").click(function () {
             //判断帖子内容长度
             if($("#content").val().length < 1){
                 layer.msg("回复内容不能为空",{icon: 5, time: 1000}, function () {
@@ -139,30 +131,28 @@
                 });
                 return false;
             }
-            //引用回复处理
             $.ajax({
                 type: "post",
-                url: "quoteReplyHandle.php",
+                url: "replyEditHandle.php",
                 data: {
-                    "content": $("#content").val(),
-                    "yzm": $("#yzm").val(),
-                    "postId": $("#reply").attr("postId"),
-                    "quoteId": $("#reply").attr("quoteId")
+                    "rid": $("#replyEditBtn").attr("rid"),
+                    "rcontent": $("#content").val(),
+                    "yzm": $("#yzm").val()
                 },
                 success: function (response) {
-                    $postId = response.substring(7);//帖子的id
+                    $postId = $("#replyEditBtn").attr("postId");
+                    $sid = $("#replyEditBtn").attr("sid");
                     if(response == "yzmnoequal"){
-                        layer.msg("验证码错误", {icon: 5, time: 1000});
-                    }else if(response == "fail"){
-                        layer.msg("回复失败", {icon: 5, time: 1000});
+                        layer.msg("验证码错误", {icon: 5, time: 1000}, function () {
+                            $("#yzm").focus();
+                        });
+                    }else if(response == "success"){
+                        layer.msg("编辑成功", {icon: 1, time: 1000});
                         setTimeout(function () {
-                            window.location.href = "postShow.php?postId="+$postId+"";
+                            window.location.href = "postShow.php?postId="+$postId+"&sid="+$sid+"";
                         }, 1500);
-                    }else{
-                        layer.msg("回复成功", {icon: 1, time: 1000});
-                        setTimeout(function () {
-                            window.location.href = "postShow.php?postId="+$postId+"";
-                        }, 1500);
+                    }else if (response == "fail"){
+                        layer.msg("编辑失败", {icon: 5, time: 1000});
                     }
                 }
             });

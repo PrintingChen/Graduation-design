@@ -10,6 +10,7 @@
     <script src="js/jquery-1.12.2.min.js"></script>
     <script src="layui/layui.js"></script>
     <script src="js/common.js"></script>
+    <script src="js/pModuleList.js"></script>
 </head>
 <?php
     //开启session
@@ -207,7 +208,7 @@
             ?>
                 <tr>
                     <td colspan="4">
-                        <a href="publish.php" class="btn btn-primary" id="pubBtn"><i class="fa fa-edit"></i>发帖</a>
+                        <button type="button" class="btn btn-primary" id="pubBtn"><i class="fa fa-edit"></i>发帖</button>
                         <ul class="pagination" style="display: inline; margin: 0;padding: 0;">
                             <?php
                                 echo $data_page['html'];

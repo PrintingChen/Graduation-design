@@ -39,9 +39,9 @@
 <?php include_once "inc/nav.inc.php"?>
 <div id="position">
     <div class="container">
-        <i class="fa fa-map-marker"></i>
+        <i class="fa fa-home"></i>
         <a href="profile.php"><?php echo $res_info['name'];?></a>
-        >>
+        >
         <a href="register.php">个人资料</a>
     </div>
 </div>
@@ -60,7 +60,7 @@
                 <ul class="pbm">
                     <li>
                         <em class="xg2">统计信息</em>
-                        <a href="#">帖子数 <?php echo $count;?></a>
+                        <a href="myPost.php">帖子数 <?php echo $count;?></a>
                         <span class="pipe">|</span>
                         <a href="#">回帖数 <?php echo $reply_count;?></a>
                     </li>

@@ -43,7 +43,7 @@ $(function(){
                         layer.msg("登录成功", {icon: 1, time: 1000});
                         setTimeout(function () {
                             window.location.href = "index.php";
-                        }, 1500);
+                        }, 1000);
                     }else if (response == "fail"){
                         layer.msg("用户名或密码错误", {icon: 5, time: 1000});
                     }

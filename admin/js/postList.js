@@ -34,7 +34,7 @@ $(function () {
                                 layer.close(index);
                             });
                         }else if(response == "fail"){
-                            layer.msg("删除失败", {icon: 6, time: 1000}, function (index) {
+                            layer.msg("删除失败", {icon: 5, time: 1000}, function (index) {
                                 window.location.href = "postList.php";
                                 layer.close(index);
                             });

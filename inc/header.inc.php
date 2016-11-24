@@ -24,7 +24,7 @@
                     $html = <<<EOT
                         <ul>
                             <li class="person"><a href="profile.php"><strong>{$res_info['name']}</strong></a></li>|
-                            <li><a href="#">我的帖子</a></li> |
+                            <li><a href="myPost.php">我的帖子</a></li> |
                             <li><a href="setProfile.php">设置</a></li> |
                             <li><a class="logout" href="#">退出</a></li> 
                             <li class="headpic"><a href="profile.php"><img src="{$img_url}" width="48" height="48"></a></li>

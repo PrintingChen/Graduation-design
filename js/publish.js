@@ -67,7 +67,7 @@ layui.use("layer", function () {
                         window.location.href = "publish.php";
                     }, 1500);
                 }else{
-                    layer.msg("发布帖子成功", {icon: 6, time: 1000});
+                    layer.msg("发布帖子成功", {icon: 1, time: 1000});
                     setTimeout(function () {
                         window.location.href = "postShow.php?postId="+$postId+"";
                     }, 1500);

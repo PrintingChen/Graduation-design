@@ -79,7 +79,8 @@
                     欢迎最新会员：<?php echo $data_lastest['name'];?>
             </div>
             <div class="col-md-3 col-sm-3" id="publish">
-                <a href="publish.php" class="btn btn-primary"><i class="fa fa-edit"></i>我要发帖</a>
+                <!--<a href="publish.php" class="btn btn-primary"><i class="fa fa-edit"></i>我要发帖</a>-->
+                <button type="button" class="btn btn-primary" id="pubBtn"><i class="fa fa-edit"></i>我要发帖</button>
             </div>
     </div>
     <!--  ../统计信息  -->

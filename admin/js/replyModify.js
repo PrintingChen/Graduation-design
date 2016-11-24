@@ -25,7 +25,7 @@ $(function () {
                 },
                 success: function (response) {
                     if (response == "success"){
-                        layer.msg("修改成功", {icon: 6, time: 1000}, function () {
+                        layer.msg("修改成功", {icon: 1, time: 1000}, function () {
                             setTimeout(function () {
                                 window.location.href = "replyList.php";
                             }, 1000);

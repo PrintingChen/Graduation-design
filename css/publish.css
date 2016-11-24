@@ -30,6 +30,10 @@
 .rows{
     margin: 5px 0;
 }
+.original{
+    border: 1px solid #ccc;
+    padding: 15px;
+}
 .rows.post-content{
     /*border: 1px solid #ccc;*/
 }

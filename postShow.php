@@ -67,6 +67,14 @@
     //查询出当前帖子的回复信息(limit分页显示)
     $post_reply = "select * from reply where tpostId=$postId {$page['limit']}";
     $res_post_reply = execute($link, $post_reply);
+
+    //判断当前的帖子发帖人是否是当前登录用户发的帖子
+    $edit = "";
+    $delete = "";
+    if ($data_post['id'] == $member_id){
+        $edit = "<a class='editBtn' href='postEdit.php?postId={$postId}'>编辑</a>";
+        $delete = "<p postId='{$postId}' class='deleteBtn'>删除</p>";
+    }
 ?>
 <body>
 <!--引入头部-->
@@ -86,8 +94,8 @@
         </div>
     </div>
     <div class="pgt">
-        <a href="publish.php?sid=<?php echo $data_post['sid'];?>" id="pubBtn" class="btn btn-primary"><i class="fa fa-edit"></i>发帖</a>
-        <a href="reply.php?postId=<?php echo $postId;?>" id="repBtn" class="btn btn-primary"><i class="fa fa-reply-all"></i>回复</a>
+        <button type="button" sid=<?php echo $data_post['sid'];?> id="pubBtn" class="btn btn-primary"><i class="fa fa-edit"></i>发帖</button>
+        <button type="button" postId=<?php echo $postId;?> id="repBtn" class="btn btn-primary"><i class="fa fa-reply-all"></i>回复</button>
         <ul class="pagination" style="display: inline; margin: 0;padding: 0; float: right;">
             <?php
                 echo $page['html'];
@@ -131,7 +139,7 @@
                 <div class="theme">
                     <table>
                         <tr>
-                            <td><a href="#">**</a></td>
+                            <td><a href="#">{$post_counts}</a></td>
                             <td><a href="#">{$post_counts}</a></td>
                             <td style="border: none;"><a href="#">**</a></td>
                         </tr>
@@ -158,7 +166,7 @@
                         {$postContent}
                     </div>
                     <div class="po">
-                        <a class="quoteBtn" href="#">回复</a>
+                        {$edit}{$delete}
                     </div>
                 </div>
             </div>
@@ -202,8 +210,8 @@ EOT;
                 <div class="theme">
                     <table>
                         <tr>
-                            <td><a href="#">**</a></td>
-                            <td><a href="#"><?php echo $ruser_post_counts;?></a></td>
+                            <td><a href="userPost.php?uid=<?php echo $data_reply_msg['id'];?>"><?php echo $ruser_post_counts;?></a></td>
+                            <td><a href="userPost.php?uid=<?php echo $data_reply_msg['id'];?>"><?php echo $ruser_post_counts;?></a></td>
                             <td style="border: none;"><a href="#">**</a></td>
                         </tr>
                         <tr>
@@ -253,8 +261,23 @@ EOT;
                         <?php }?>
                         <?php echo nl2br($data_reply['rcontent']);?>
                     </div>
+                <!--<script>
+                    $(function () {
+                        layui.use("layer", function () {
+                            var layer = layui.layer;
+
+                        });
+                    });
+                </script>-->
                     <div class="po">
-                        <a class="quoteBtn" href="quoteReply.php?postId=<?php echo $postId;?>&quoteId=<?php echo $data_reply['rid'];?>">回复</a>
+                        <a href="javascript:void(0);" class="quoteBtn quoteRepBtn" postId="<?php echo $postId;?>" quoteId="<?php echo $data_reply['rid'];?>">回复</a>
+                        <?php
+                        //判断是否为当前登录用户自己发的帖，如果是则显示 编辑功能
+                        if ($member_id == $data_reply_msg['id']){
+                            echo "<a class='editBtn' href='replyEdit.php?rid={$data_reply['rid']}&postId={$postId}'>编辑</a>";
+                            echo "<p rid='{$data_reply['rid']}' sid='{$data_post['sid']}' postId='{$postId}' class='deleteRepBtn'>删除</p>";
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
@@ -265,8 +288,8 @@ EOT;
     ?>
 <!--../回复信息展示-->
     <div class="pgt">
-        <a href="publish.php?sid=<?php echo $data_post['sid'];?>" id="pubBtn" class="btn btn-primary"><i class="fa fa-edit"></i>发帖</a>
-        <a href="reply.php?postId=<?php echo $postId;?>" id="repBtn" class="btn btn-primary"><i class="fa fa-reply-all"></i>回复</a>
+        <button type="button" sid=<?php echo $data_post['sid'];?> id="pubBtn1" class="btn btn-primary"><i class="fa fa-edit"></i>发帖</button>
+        <button type="button" postId=<?php echo $postId;?> id="repBtn1" class="btn btn-primary"><i class="fa fa-reply-all"></i>回复</button>
         <ul class="pagination" style="display: inline; margin: 0;padding: 0; float: right;">
             <?php
                 echo $page['html'];

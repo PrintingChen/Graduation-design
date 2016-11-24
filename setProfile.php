@@ -14,6 +14,7 @@
     <script src="js/area.js"></script>
     <script src="js/setProfile.js"></script>
     <script src="js/common.js"></script>
+
 </head>
 <?php
     //开启session
@@ -34,30 +35,6 @@
     $res_info = fetch_array(execute($link, $sql_info));
     //引入处理登录信息
     include_once "inc/handlerLogin.php";
-    //处理提交的基本资料的数据
-    if (isset($_POST['subBasic'])){
-        //将提交的数据插入到数据库当中
-        $birthday = $_POST['year']."-".$_POST['month']."-".$_POST['day'];
-        $homeplace = $_POST['birprov']."、".$_POST['bircity']."、".$_POST['birdistrict'];
-        $sql_ins = "update user set reallyName='{$_POST['reallyName']}',sex='{$_POST['sex']}',birthday='{$birthday}',homeplace='{$homeplace}',bloodType='{$_POST['bloodtype']}' where id='{$member_id}'";
-        execute($link, $sql_ins);
-        if (mysqli_affected_rows($link)) {
-            promptBox("数据更新成功", 6, "profile.php");
-        }else {
-            promptBox("数据更新失败", 5, "profile.php");
-        }
-    }
-    //处理提交的联系方式的数据
-    if (isset($_POST['subContact'])){
-        //将提交的数据插入到数据库当中
-        $sql_contact = "update user set fixedTel='{$_POST['fixed-tel']}',phone='{$_POST['phone']}',qq='{$_POST['qq']}',website='{$_POST['homepage']}' where id='{$member_id}'";
-        execute($link, $sql_contact);
-        if (mysqli_affected_rows($link)) {
-            promptBox("数据更新成功", 6, "profile.php");
-        }else {
-            promptBox("数据更新失败", 5, "profile.php");
-        }
-    }
     //处理提交的修改头像的数据
     if (isset($_POST['subUploadpic'])){
         //将提交的数据插入到数据库当中
@@ -77,54 +54,7 @@
             exit();
         }
     }
-    //处理提交的教育情况的数据
-    if (isset($_POST['subEducation'])){
-        //将提交的数据插入到数据库当中
-        $sql_edu = "update user set school='{$_POST['school']}',degree='{$_POST['degrees']}' where id='{$member_id}'";
-        execute($link, $sql_edu);
-        if (mysqli_affected_rows($link)) {
-            promptBox("数据更新成功", 6, "profile.php");
-        }else {
-            promptBox("数据更新失败", 5, "profile.php");
-        }
-    }
-    //处理提交的工作情况的数据
-    if (isset($_POST['subWorking'])){
-        //将提交的数据插入到数据库当中
-        $sql_working = "update user set company='{$_POST['company']}',profession='{$_POST['profession']}',job='{$_POST['job']}',income='{$_POST['income']}' where id='{$member_id}'";
-        execute($link, $sql_working);
-        if (mysqli_affected_rows($link)) {
-            promptBox("数据更新成功", 6, "profile.php");
-        }else {
-            promptBox("数据更新失败", 5, "profile.php");
-        }
-    }
-    //处理提交的修改密码的数据
-    if (isset($_POST['subMdfpsw'])){
-        //将提交的数据插入到数据库当中
-        check_vcode($_POST['yzm'], $_SESSION['code']);
-        $opsw = md5($_POST['opsw']);
-        $npsw = md5($_POST['npsw']);
-        //将提交过来的旧密码比对数据库里面的密码是否一致
-        $sql_compare = "select * from user where id='{$member_id}' and psw='{$opsw}'";
-        if (nums($link, $sql_compare)) {
-            //开始更新密码
-            $sql_mdfpsw = "update user set psw='{$npsw}' where id='{$member_id}'";
-            execute($link, $sql_mdfpsw);
-            if (mysqli_affected_rows($link)) {
-                //密码修改成功后将原来登录的信息cookie删除掉
-                setcookie('bs[userName]', '', time()-36000);
-                setcookie('bs[psw]', '', time()-36000);
-                promptBox("数据更新成功，请重新登录", 6, "index.php");
-            }else {
-                promptBox("数据更新失败", 5, "setProfile.php");
-            }
-        }else{
-            skip('setProfile.php', 'error', '旧密码错误^_^');
-            exit();
-        }
 
-    }
 ?>
 <body>
 <!--引入头部-->
@@ -165,7 +95,7 @@
                         <input type="file" name="upload" id="upload">
                     </div>
                     <div>
-                        <button type="submit" name="subUploadpic" class="btn btn-primary" id="upload-btn"><i class="fa fa-check-square-o"></i>提交</button>
+                        <button name="subUploadpic" class="btn btn-primary" id="upload-btn"><i class="fa fa-check-square-o"></i>提交</button>
                     </div>
                 </form>
             </div>
@@ -178,7 +108,7 @@
                 </ul>
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade in active" id="basic-data">
-                        <form action="" method="post" id="form-basic">
+                        <form id="form-basic">
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">用户名：</label></div>
                                 <div class="col-md-10 w40">
@@ -221,6 +151,7 @@
                                         <option value="<?php //echo $bir[2]?>"><?php //echo $bir[2]?></option>
                                         <option value="">日</option>
                                     </select>
+                                    <?php //echo $bir[0]."年".$bir[1]."月".$bir[2]."日";?>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -231,15 +162,16 @@
                                         $home = explode("、", $res_info['homeplace']);
                                     ?>
                                     <select name="birprov" id="birprov">
-                                        <option value="<?php echo $home[0]?>"><?php echo $home[0]?></option>
+                                        <option value="<?php //echo $home[0]?>"><?php echo $home[0]?></option>
                                     </select>
                                     <select name="bircity" id="bircity">
-                                        <option value="<?php echo $home[1]?>"><?php echo $home[1]?></option>
+                                        <option value="<?php //echo $home[1]?>"><?php echo $home[1]?></option>
                                     </select>
                                     <select name="birdistrict" id="birdistrict">
-                                        <option value="<?php echo $home[2]?>"><?php echo $home[2]?></option>
+                                        <option value="<?php //echo $home[2]?>"><?php echo $home[2]?></option>
                                     </select>
                                 </div>
+                                <?php //echo $home[0].$home[1].$home[2];?>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">血型：</label></div>
@@ -257,13 +189,13 @@
                             <div class="form-group">
                                 <div class="col-md-2"><label for=""></label></div>
                                 <div class="col-md-10 w40">
-                                    <button type="submit" name="subBasic" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
+                                    <button type="button" name="subBasic" class="btn btn-primary" id="basicBtn"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="tab-pane fade" id="contact-info">
-                        <form action="" method="post" id="form-contact">
+                        <form id="form-contact">
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">用户名：</label></div>
                                 <div class="col-md-10 w40">
@@ -306,13 +238,13 @@
                             <div class="form-group">
                                 <div class="col-md-2"><label for=""></label></div>
                                 <div class="col-md-10 w40">
-                                    <button type="submit" name="subContact" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
+                                    <button type="button" name="subContact" class="btn btn-primary" id="contactBtn"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="tab-pane fade" id="education">
-                        <form action="" method="post" id="form-education">
+                        <form id="form-education">
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">用户名：</label></div>
                                 <div class="col-md-10 w40">
@@ -328,7 +260,7 @@
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">学历：</label></div>
                                 <div class="col-md-10 w40">
-                                    <select name="degrees" id="degrees">
+                                    <select name="degrees" id="degrees" class="form-control">
                                         <option value="<?php echo $res_info['degree']?>"><?php echo $res_info['degree']?></option>
                                         <option value="博士">博士</option>
                                         <option value="硕士">硕士</option>
@@ -343,13 +275,14 @@
                             <div class="form-group">
                                 <div class="col-md-2"><label for=""></label></div>
                                 <div class="col-md-10 w40">
-                                    <button type="submit" name="subEducation" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
+                                    <button type="button" name="subEducation" class="btn btn-primary" id="eduBtn"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="tab-pane fade" id="working">
-                        <form action="" method="post" id="form-working">
+                        <!--method="post"-->
+                        <form id="form-working">
                             <div class="form-group">
                                 <div class="col-md-2"><label for="">用户名：</label></div>
                                 <div class="col-md-10 w40">
@@ -388,7 +321,7 @@
                             <div class="form-group">
                                 <div class="col-md-2"><label for=""></label></div>
                                 <div class="col-md-10 w40">
-                                    <button type="submit" name="subWorking" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
+                                    <button type="button" name="subWorking" class="btn btn-primary" id="workingBtn"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
                                 </div>
                             </div>
                         </form>
@@ -397,11 +330,72 @@
             </div>
             <div class="mdf-psw">
                 <p>您必须填写原密码才能修改下面的资料</p>
-                <form action="" method="post" id="form-mdfpsw">
+                <script>
+                    $(function () {
+                        layui.use("layer", function () {
+                            var layer = layui.layer;
+                            //更新密码
+                            $("#mdfpswBtn").on("click", function () {
+                                //验证数据
+                                //旧密码不能为空
+                                if($("#opsw").val() == 0){
+                                    layer.msg("旧密码不能为空", {icon: 5, time: 1000}, function () {
+                                        $("#opsw").focus();
+                                    });
+                                    return false;
+                                }
+                                //新密码不能为空
+                                if($("#npsw").val() == 0){
+                                    layer.msg("新密码不能为空", {icon: 5, time: 1000}, function () {
+                                        $("#npsw").focus();
+                                    });
+                                    return false;
+                                }
+                                //确认密码
+                                if($("#repsw").val() != $("#npsw").val()){
+                                    layer.msg("两次密码不一致", {icon: 5, time: 1000}, function () {
+                                        $("#repsw").focus();
+                                    });
+                                    return false;
+                                }
+                                //验证码
+                                if($("#yzm").val().length != 4){
+                                    layer.msg("验证码必须为4位", {icon: 5, time: 1000}, function () {
+                                        $("#yzm").focus();
+                                    });
+                                    return false;
+                                }
+                                $.ajax({
+                                    type: "post",
+                                    url: "userModifyPswHandle.php",
+                                    data: $("#form-mdfpsw").serialize(),
+                                    success: function (response) {
+                                        if(response == "yzmnotequal"){
+                                            layer.msg("验证码错误", {icon: 5, time: 1000}, function () {
+                                                $("#yzm").focus();
+                                            });
+                                        }else if(response == "opswerror"){
+                                            layer.msg("原密码有误", {icon: 5, time: 1000}, function () {
+                                                $("#opsw").focus();
+                                            });
+                                        }else if(response == "success"){
+                                            layer.msg("密码修改成功", {icon: 1, time: 1000}, function () {
+                                                window.location.href = "login.php";
+                                            });
+                                        }else if(response == "fail"){
+                                            layer.msg("密码未改动", {icon: 5, time: 1000});
+                                        }
+                                    }
+                                });
+                            });
+                        });
+                    });
+                </script>
+                <form id="form-mdfpsw">
                     <div class="form-group">
                         <div class="col-md-2"><label for="">旧密码：</label></div>
                         <div class="col-md-10 w40">
-                            <input type="password" name="opsw" class="form-control"
+                            <input type="password" name="opsw" id="opsw" class="form-control"
                                    data-notempty="true"
                                    data-notempty-message="旧密码不能为空"
                             >
@@ -421,7 +415,7 @@
                     <div class="form-group">
                         <div class="col-md-2"><label for="">确认新密码：</label></div>
                         <div class="col-md-10 w40">
-                            <input type="password" name="repsw" class="form-control"
+                            <input type="password" name="repsw" id="repsw" class="form-control"
                                    data-notempty="true"
                                    data-notempty-message="确认新密码不能为空"
                                    data-equalto="#npsw"
@@ -432,7 +426,7 @@
                     <div class="form-group">
                         <div class="col-md-2"><label for="">验证码：</label></div>
                         <div class="col-md-10 w40">
-                            <input type="text" name="yzm" class="form-control"
+                            <input type="text" name="yzm" id="yzm" class="form-control"
                                    data-notempty="true"
                                    data-notempty-message="验证码不能为空"
                             >
@@ -447,7 +441,7 @@
                     <div class="form-group">
                         <div class="col-md-2"><label for=""></label></div>
                         <div class="col-md-10 w40">
-                            <button type="submit" name="subMdfpsw" class="btn btn-primary"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
+                            <button type="button" name="subMdfpsw" class="btn btn-primary" id="mdfpswBtn"><i class="fa fa-check-square-o" style="margin-right: 3px;"></i>提交</button>
                         </div>
                     </div>
                 </form>

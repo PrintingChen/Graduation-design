@@ -134,7 +134,7 @@
                 ?>
                 <tr>
                     <td colspan="4">
-                        <a href="publish.php?sid=<?php echo $_GET['sid'];?>" class="btn btn-primary" id="pubBtn"><i class="fa fa-edit"></i>发帖</a>
+                        <button type="button" sid=<?php echo $_GET['sid'];?>  class="btn btn-primary" id="pubBtn"><i class="fa fa-edit"></i>发帖</button>
                         <ul class="pagination" style="display: inline; margin: 0;padding: 0;">
                             <?php
                                 echo $data_page['html'];
@@ -165,7 +165,7 @@
                                 您需要登录后才可以发帖
                                 <a href="login.php" class="xi2">登录</a> |
                                 <a href="register.php" class="xi2">立即注册</a>
-                           </div> 
+                           </div>
 EOT;
                         echo $htmlisLogin;
                     }

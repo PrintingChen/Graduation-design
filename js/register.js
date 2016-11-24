@@ -60,7 +60,7 @@ $(function(){
                             $("#email").focus();
                         });
                     }else if(response == "success"){
-                        layer.msg("注册成功", {icon: 6, time: 1000});
+                        layer.msg("注册成功", {icon: 1, time: 1000});
                         setTimeout(function () {
                             window.location.href = "index.php";
                         }, 1500);

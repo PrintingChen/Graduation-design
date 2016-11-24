@@ -37,11 +37,9 @@
         promptBox("此用户不存在", 5, "index.php");
         exit;
     }
-    //查询用户uid传参过来的信息
-    $sql_user = "select * from user u, post p where u.id={$_GET['uid']} and p.postuid=u.id";
-    $data_user = fetch_array(execute($link, $sql_user));
     //查询传参过来的用户的帖子总数
-    $sql_total = "select * from post where postuid={$_GET['uid']}";
+    $sql_total = "select * from post where postuid={$_GET['uid']} ORDER BY postId DESC";
+    $data_post = fetch_array(execute($link, $sql_total));
     $count = nums($link, $sql_total);
     //查询传参过来的用户的回帖总数
     $sql_reply_total = "select * from reply where ruid={$_GET['uid']}";
@@ -61,28 +59,28 @@
 <?php include_once "inc/nav.inc.php"?>
 <div id="position">
     <div class="container">
-        <i class="fa fa-map-marker"></i>
-        <a href="userprofile.php?uid=<?php echo $data_user['id'];?>"><?php echo $data_user['name'];?></a>
-        >>
+        <i class="fa fa-home"></i>
+        <a href="userprofile.php?uid=<?php echo $data['id'];?>"><?php echo $data['name'];?></a>
+        >
         <a href="#">个人资料</a>
     </div>
 </div>
 <div id="profile">
     <div class="container">
         <div class="profile-h">
-            <a href="userProfile.php?uid=<?php echo $data_user['id'];?>"><img src="<?php echo $upicurl;?>" width="48" height="48"></a>
+            <a href="userProfile.php?uid=<?php echo $data['id'];?>"><img src="<?php echo $upicurl;?>" width="48" height="48"></a>
             <div class="info">
-                <?php echo $data_user['name']?>个人资料<br>
-                UID：<?php echo $data_user['id']?>
+                <?php echo $data['name']?>个人资料<br>
+                UID：<?php echo $data['id']?>
             </div>
         </div>
         <div class="person-info">
             <div class="block">
-                <h2 class="mbn"><?php echo $data_user['name']?> <img src="img/ol.gif" alt=""> <span class="xw0">(UID：<?php echo $data_user['id']?>)</span></h2>
+                <h2 class="mbn"><?php echo $data['name']?> <img src="img/ol.gif" alt=""> <span class="xw0">(UID：<?php echo $data['id']?>)</span></h2>
                 <ul class="pbm">
                     <li>
                         <em class="xg2">统计信息</em>
-                        <a href="#">帖子数 <?php echo $count;?></a>
+                        <a href="userPost.php?uid=<?php echo $data['id'];?>">帖子数 <?php echo $count;?></a>
                         <span class="pipe">|</span>
                         <a href="#">回帖数 <?php echo $reply_count;?></a>
                     </li>
@@ -90,63 +88,63 @@
                 <ul class="pbm pf_l">
                     <li>
                         <em class="xg2">真实姓名</em>
-                        <?php echo $data_user['reallyName']?>
+                        <?php echo $data['reallyName']?>
                     </li>
                     <li>
                         <em class="xg2">性别</em>
-                        <?php echo $data_user['sex']?>
+                        <?php echo $data['sex']?>
                     </li>
                     <li>
                         <em class="xg2">生日</em>
-                        <?php echo $data_user['birthday']?>
+                        <?php echo $data['birthday']?>
                     </li>
                     <li>
                         <em class="xg2">出生地</em>
-                        <?php echo $data_user['homeplace']?>
+                        <?php echo $data['homeplace']?>
                     </li>
                     <li>
                         <em class="xg2">个人主页</em>
-                        <a href="#"><?php echo $data_user['website']?></a>
+                        <a href="#"><?php echo $data['website']?></a>
                     </li>
                     <li>
                         <em class="xg2">邮箱</em>
-                        <?php echo $data_user['email']?>
+                        <?php echo $data['email']?>
                     </li>
                     <li>
                         <em class="xg2">血型</em>
-                        <?php echo $data_user['bloodType']?>
+                        <?php echo $data['bloodType']?>
                     </li>
                     <li>
                         <em class="xg2">固定电话</em>
-                        <?php echo $data_user['fixedTel']?>
+                        <?php echo $data['fixedTel']?>
                     </li>
                     <li>
                         <em class="xg2">手机</em>
-                        <?php echo $data_user['phone']?>
+                        <?php echo $data['phone']?>
                     </li>
                     <li>
                         <em class="xg2">QQ</em>
-                        <?php echo $data_user['qq']?>
+                        <?php echo $data['qq']?>
                     </li>
                     <li>
                         <em class="xg2">毕业学校</em>
-                        <?php echo $data_user['school']?>
+                        <?php echo $data['school']?>
                     </li>
                     <li>
                         <em class="xg2">学历</em>
-                        <?php echo $data_user['degree']?>
+                        <?php echo $data['degree']?>
                     </li>
                     <li>
                         <em class="xg2">公司</em>
-                        <?php echo $data_user['company']?>
+                        <?php echo $data['company']?>
                     </li>
                     <li>
                         <em class="xg2">职业</em>
-                        <?php echo $data_user['profession']?>
+                        <?php echo $data['profession']?>
                     </li>
                     <li>
                         <em class="xg2">职位</em>
-                        <?php echo $data_user['job']?>
+                        <?php echo $data['job']?>
                     </li>
                 </ul>
             </div>
@@ -161,11 +159,11 @@
                 <ul class="pbm pf_l" style="border-bottom: none;">
                     <li>
                         <em class="xg2">注册时间</em>
-                        <?php echo $data_user['registerTime']?>
+                        <?php echo $data['registerTime']?>
                     </li>
                     <li>
                         <em class="xg2">最后访问时间</em>
-                        <?php echo $data_user['lastLogin']?>
+                        <?php echo $data['lastLogin']?>
                     </li>
                     <li>
                         <em class="xg2">注册IP</em>
@@ -177,11 +175,11 @@
                     </li>
                     <li>
                         <em class="xg2">上次活动时间</em>
-                        <?php echo $data_user['lastLogin']?>
+                        <?php echo $data['lastLogin']?>
                     </li>
                     <li>
                         <em class="xg2">上次发表时间</em>
-                        Eisneim
+                        <?php echo $data_post['postTime'];?>
                     </li>
                 </ul>
             </div>

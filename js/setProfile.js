@@ -1,6 +1,3 @@
-/**
- * Created by chenyt on 2016/11/2.
- */
 $(function () {
     //标签页切换
     $("#myTab a").on("click", function (e) {
@@ -58,5 +55,95 @@ $(function () {
 
     //执行三级联动代码
     _init_area();
+
+    layui.use("layer", function () {
+        var layer = layui.layer;
+        //处理工作情况
+        $("#workingBtn").on("click", function () {
+            if($("#income").val().length == 0){
+                layer.msg("年收入不能为空", {icon: 5, time: 1500}, function () {
+                    $("#income").focus();
+                });
+                return false;
+            }
+            if(isNaN($("#income").val())){
+                layer.msg("年收入必须为数字", {icon: 5, time: 1500}, function () {
+                    $("#income").focus();
+                });
+                return false;
+            }
+            if ($("#income").val() < 0){
+                layer.msg("年收入必须为非负数", {icon: 5, time: 1500}, function () {
+                    $("#income").focus();
+                });
+                return false;
+            }
+            $.ajax({
+                type: "post",
+                url: "workingHandle.php",
+                data: $("#form-working").serialize(),
+                success: function (response) {
+                    if(response == "success"){
+                        layer.msg("数据更新成功", {icon: 1, time: 1000}, function () {
+                            window.location.href = "profile.php";
+                        });
+                    }else if(response == "fail"){
+                        layer.msg("数据未改动", {icon: 5, time: 1000});
+                    }
+                }
+            });
+        });
+        //处理教育情况
+        $("#eduBtn").on("click", function () {
+            $.ajax({
+                type: "post",
+                url: "educationHandle.php",
+                data: $("#form-education").serialize(),
+                success: function (response) {
+                    if(response == "success"){
+                        layer.msg("数据更新成功", {icon: 1, time: 1000}, function () {
+                            window.location.href = "profile.php";
+                        });
+                    }else if(response == "fail"){
+                        layer.msg("数据未改动", {icon: 5, time: 1000});
+                    }
+                }
+            });
+        });
+        //处理联系方式数据
+        $("#contactBtn").on("click", function () {
+            $.ajax({
+                type: "post",
+                url: "contactHandle.php",
+                data: $("#form-contact").serialize(),
+                success: function (response) {
+                    if(response == "success"){
+                        layer.msg("数据更新成功", {icon: 1, time: 1000}, function () {
+                            window.location.href = "profile.php";
+                        });
+                    }else if(response == "fail"){
+                        layer.msg("数据未改动", {icon: 5, time: 1000});
+                    }
+                }
+            });
+        });
+        //处理联系方式数据
+        $("#basicBtn").on("click", function () {
+            $.ajax({
+                type: "post",
+                url: "basicHandle.php",
+                data: $("#form-basic").serialize(),
+                success: function (response) {
+                    if(response == "success"){
+                        layer.msg("数据更新成功", {icon: 1, time: 1000}, function () {
+                            window.location.href = "profile.php";
+                        });
+                    }else if(response == "fail"){
+                        layer.msg("数据未改动", {icon: 5, time: 1000});
+                    }
+                }
+            });
+        });
+    });
 
 });

@@ -35,7 +35,7 @@ $(function(){
                     data : $("#sml").serialize(),
                     success : function (response, status, xhr) {
                         if(response == "1"){
-                            layer.msg("批量删除成功", {icon : 6, time: 1500});
+                            layer.msg("批量删除成功", {icon : 1, time: 1500});
                             setTimeout(function () {
                                 window.location.href = "sModuleList.php";
                             }, 800);

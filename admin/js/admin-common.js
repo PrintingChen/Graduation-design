@@ -43,11 +43,11 @@ $(function(){
                     url: "logout.php",
                     success: function (response) {
                         if(response == "0"){
-                            layer.msg("您还未登录", {icon: 6, time: 800}, function (index) {
+                            layer.msg("您还未登录", {icon: 5, time: 800}, function (index) {
                                 window.location.href = "login.php";
                             });
                         }else if (response == "1"){
-                            layer.msg("注销成功", {icon: 5, time: 800}, function (index) {
+                            layer.msg("注销成功", {icon: 1, time: 800}, function (index) {
                                 window.location.href = "login.php";
                             });
                         }

@@ -25,7 +25,7 @@
     $link = connect();
     //判断当前是否为登录状态
     if(!($member_id = login_state($link))){
-        promptBox("您还未登录，无法发布帖子", 5, "index.php");
+        promptBox("您还未登录，无法发布帖子", 5, "login.php");
         exit;
     }
     //引入处理登录信息

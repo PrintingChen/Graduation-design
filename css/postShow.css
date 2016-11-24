@@ -179,6 +179,33 @@
     display: inline-block;
     text-indent: 22px;
     background: url("../img/fastreply.gif") no-repeat 0 center;
+    cursor: pointer;
+}
+.editBtn{
+    display: inline-block;
+    text-indent: 22px;
+    background: url("../img/edit.gif") no-repeat 0 center;
+    margin-left: 10px;
+}
+.deleteBtn{
+    display: inline-block;
+    text-indent: 22px;
+    background: url("../img/delete.png") no-repeat 0 center;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.deleteBtn:hover{
+    text-decoration: underline;
+}
+.deleteRepBtn{
+    display: inline-block;
+    text-indent: 22px;
+    background: url("../img/delete.png") no-repeat 0 center;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.deleteRepBtn:hover{
+    text-decoration: underline;
 }
 .fastpub-avatar{
     margin-top: 10px;
