@@ -1,4 +1,28 @@
 $(function () {
+    //导航
+    //请求父版块pid
+    $.ajax({
+        type: "post",
+        url: "admin/getPMId.php",
+        success: function (response) {
+            window.dataId = jQuery.parseJSON(response);
+        }
+    });
+    //请求父版块名称
+    $.ajax({
+        type: "post",
+        url: "admin/getPMData.php",
+        success: function (response) {
+            var data = jQuery.parseJSON(response);
+            var li = "";
+            for (var i=0;i<data.length;i++){
+                li += "<li><a href='pModuleList.php?pid="+dataId[i]+"'>"+data[i]+"</a></li>";
+            }
+            $("#navbar-list").append(li);
+        }
+    });
+
+    //退出登录
     $(".logout").on("click", function () {
         layui.use('layer', function(){
             var layer = layui.layer;

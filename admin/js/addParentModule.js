@@ -3,7 +3,7 @@ $(function(){
     $("#form-pmodule").formValidator();
     layui.use('layer', function(){
         var layer = layui.layer;
-        $("#form-pmodule").submit(function () {
+        $("#addPModule").on("click",function () {
             //验证版块名称
             $moduleNameVal = $("#pmoduleName").val();
             if ($moduleNameVal.length == 0){
@@ -38,7 +38,24 @@ $(function(){
                 });
                 return false;
             }
-            return true;
+            $.ajax({
+                type: "post",
+                url: "addParentModuleHandle.php",
+                data: $("#form-pmodule").serialize(),
+                success: function (response) {
+                    if(response == "hasPM"){
+                        layer.msg("添加的父版块已存在", {icon:5 ,time: 1500}, function () {
+                            $("#pmoduleName").focus();
+                        });
+                    }else if(response == "success"){
+                        layer.msg("添加成功", {icon: 1, time: 1500}, function () {
+                            window.location.href = "pModuleList.php";
+                        });
+                    }else if(response == "fail"){
+                        layer.msg("添加失败", {icon: 1, time: 1500});
+                    }
+                }
+            });
         });
     });
 });

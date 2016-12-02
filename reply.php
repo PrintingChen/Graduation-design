@@ -54,7 +54,7 @@
     <div class="position">
         <div class="z">
             <a href="index.php" class="nvhm"><i class="fa fa-home"></i></a>
-            <em><i class='fa fa-angle-right'></i>
+            <em style="font-style: normal;"><i class='fa fa-angle-right'></i>
             回复帖子
         </div>
     </div>
@@ -142,7 +142,7 @@
                             window.location.href = "postShow.php?postId="+$postId+"";
                         }, 1500);
                     }else{
-                        layer.msg("回复成功", {icon: 6, time: 1000});
+                        layer.msg("回复成功", {icon: 1, time: 1000});
                         setTimeout(function () {
                             window.location.href = "postShow.php?postId="+$postId+"";
                         }, 1500);

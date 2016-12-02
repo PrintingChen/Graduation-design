@@ -201,7 +201,7 @@
     display: inline-block;
     text-indent: 22px;
     background: url("../img/delete.png") no-repeat 0 center;
-    margin-left: 10px;
+    margin-left: 18px;
     cursor: pointer;
 }
 .deleteRepBtn:hover{
@@ -272,4 +272,30 @@
     display: inline-block;
     background: url("../img/icon_quote_e.gif") no-repeat 100% 100%;
     padding-right: 35px;
+}
+img#jinhua {
+    position: absolute;
+    right: 135px;
+    top: 5px;
+}
+.fa.fa-lock{
+    color: #FCAE04;
+    font-size: 18px;
+    margin-right: 8px;
+    position: absolute;
+    top: 14px;
+    left:6px;
+}
+#lock {
+    display: inline-block;
+    width: 100%;
+    margin-top: 10px;
+    border: 1px dashed #ccc;
+    padding: 5px;
+    font-size: 14px;
+    color: #666;
+    position: relative;
+}
+em.tip {
+    margin-left: 20px;
 }

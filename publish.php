@@ -146,7 +146,7 @@
         $("#publish").click(function () {
             //必须选则一个子版块
             if($("#selSModule").val().length == 0){
-                layer.msg("必须选则一个子版块",{icon: 5, time: 1000}, function () {
+                layer.msg("必须选择一个子版块",{icon: 5, time: 1000}, function () {
                     $("#selSModule").focus();
                 });
                 return false;
@@ -187,7 +187,7 @@
                             window.location.href = "publish.php";
                         }, 1500);
                     }else{
-                        layer.msg("发布帖子成功", {icon: 6, time: 1000});
+                        layer.msg("发布帖子成功", {icon: 1, time: 1000});
                         setTimeout(function () {
                             window.location.href = "postShow.php?postId="+$postId+"";
                         }, 1500);

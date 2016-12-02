@@ -22,6 +22,8 @@
     require_once '../inc/common.inc.php';
     //调用数据库连接函数
     $link = connect();
+    //管理员是否登录
+    $mid = manage_login_state($link);
     //当提交数据之后
     if (isset($_GET['search'])){
         //获取查询条件

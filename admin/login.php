@@ -8,33 +8,6 @@
     <script src="../js/jquery-3.1.1.min.js"></script>
     <script src="../layui/layui.js"></script>
     <script src="js/login.js"></script>
-    <script>
-        $(function () {
-            $("#btn").on("click", function () {
-                $.ajax({
-                    type :　"post",
-                    url : "loginHandle.php",
-                    data : $("#loginform").serialize(),
-                    success : function (response, status, xhr) {
-                        layui.use("layer", function () {
-                            var layer = layui.layer;
-                            if (response == 0){
-                                layer.msg("验证码错误", {icon: 5, time: 800});
-                            }else if(response == 2){
-                                layer.msg("登录名或者密码错误", {icon: 5, time: 800});
-                            }else if (response == 1){
-                                layer.msg("登录成功", {icon: 5, time: 1000});
-                                window.location.href = "index.php";
-                            }
-                        });
-                    }
-                });
-                //特别注意：如果button默认type=submit的提交按钮不使用return false来阻止默认的提交事件的话不能实现跳转
-                //        如果type=button的提交按钮则不用return false
-                //return false;
-            });
-        });
-    </script>
 </head>
 <?php
     //开启session
@@ -46,7 +19,7 @@
     //调用数据库连接函数
     $link = connect();
     //管理员是否登录
-    if (manage_login_state($link)) {
+    if ($mid = manage_login_state($link)) {
         promptBox('您已经登录！', 6, 'index.php');
         exit();
     }
@@ -70,7 +43,7 @@
                     </div>
                     <div class="inputOuter">
                         <i class="fa fa-qrcode fa-2x abs"></i>
-                        <input type="text" class="form-control w70 rel" name="yzm" placeholder="验证码">
+                        <input type="text" class="form-control w70 rel" name="yzm" id="yzminput" placeholder="验证码">
                         <img id="yzm" src="../inc/vcode.php" alt="点击刷新验证码">
                     </div>
                     <div class="submit" style="text-align: center;">

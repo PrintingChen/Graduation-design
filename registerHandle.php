@@ -7,6 +7,10 @@
     require_once 'inc/common.inc.php';
     //调用数据库连接函数
     $link = connect();
+    //查询注册验证的状态，是否为自动验证，或是人工验证
+    $sql_ver = "select * from settings where id=1";
+    $data_ver = fetch_array(execute($link, $sql_ver));
+    $userStatus = $data_ver["isverifyuser"];
     //验证验证码
     if ($_POST['yzm'] != $_SESSION['code']){
         echo "yzmnoequal";
@@ -25,8 +29,12 @@
     }
     //开始插入数据
     $psw = md5($_POST['psw']);
-    $sql_ins = "insert into user(name,psw,email,registerTime,lastLogin) values('{$_POST['userName']}','{$psw}','{$_POST['email']}',NOW(),NOW())";
-    //echo $sql_ins;exit;
+    //判断用户是哪种验证方式
+    if($userStatus == 1){ //人工验证
+        $sql_ins = "insert into user(name,psw,email,userStatus,registerTime,lastLogin) values('{$_POST['userName']}','{$psw}','{$_POST['email']}',1,NOW(),NOW())";
+    }else{ //自动验证
+        $sql_ins = "insert into user(name,psw,email,userStatus,registerTime,lastLogin) values('{$_POST['userName']}','{$psw}','{$_POST['email']}',0,NOW(),NOW())";
+    }
     $result = execute($link, $sql_ins);
     //判断数据是否插入成功
     if (mysqli_affected_rows($link) == 1) {

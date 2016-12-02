@@ -26,6 +26,16 @@
     $link = connect();
     //判断当前是否为登录状态
     $member_id = login_state($link);
+    //如果用户登录了的时候,查询登录用户的信息
+    if ($member_id){
+
+        //判断当前登录用户的访问状态
+        $sql_status = "select * from user where id={$member_id}";
+        $data_status = fetch_array(execute($link, $sql_status));
+        $status = $data_status['isForbid'];
+        //判断当前登录的用户是否已通过验证,如果未通过验证，则提示需要管理员审核通过验证方可操作
+        $userStatus = $data_status["userStatus"];
+    }
     //引入处理登录信息
     include_once "inc/handlerLogin.php";
     //判断子版块sid是否合法
@@ -95,6 +105,10 @@
     <div class="plist">
         <div class="pm-sm-top">
             <h2>全部主题</h2>
+            <span class="reply poa" style="right: 440px">回复 /</span>
+            <span class="look poa" style="right:407px;">查看</span>
+            <span class="author poa" style="right: 547px;">作者</span>
+            <span class="lastTime poa" style="right: 269px;">最后发表时间</span>
         </div>
         <div class="plist-row">
             <table class="table table-condensed table-hover" id="plist-table">
@@ -102,39 +116,80 @@
                 if ($sm_total) {
                     //循环输出子版块的所有帖子
                     while ($data_sm_post = fetch_array($res_total)) {
-                        //查询帖子对应的子版块和发帖人信息
-                        $smu = "select * from user,sub_module where id={$data_sm_post['postuid']} and sid={$data_sm_post['tsmoduleId']}";
+                        $sql_u = "select * from user where id={$data_sm_post['postuid']}";
+                        $data_u = fetch_array(execute($link, $sql_u));
+                        //查询帖子对应的回复数等信息
+                        $smu = "select * from reply where tpostId={$data_sm_post['postId']}";
                         $data_smu = fetch_array(execute($link, $smu));
+                        $rep_nums = nums($link, $smu);
                         //帖子发帖人的头像
                         $url = "";
-                        if (!empty($data_smu['photo'])) {
-                            $url = $data_smu['photo'];
+                        if (!empty($data_u['photo'])) {
+                            $url = $data_u['photo'];
                         } else {
                             $url = "img/noavatar_small.gif";
                         }
-                        ?>
+                        //判断这条帖子是否为精华帖子
+                        $img = "";
+                        $boutique = $data_sm_post['isBoutique'];
+                        if ($boutique){
+                            $img = "<img id='jiajing' src='img/jiajing.gif'>";
+                        }else{
+                            $img = "";
+                        }
+
+                ?>
                         <tr>
                             <td class="ltd1" style="padding-left: 10px;">
-                                <a href="userProfile.php?uid=<?php echo $data_smu['id']; ?>">
-                                    <img src="<?php echo $url; ?>" alt="发帖人" title="<?php echo $data_smu['name']; ?>" width="31" height="29">
+                                <a href="userProfile.php?uid=<?php echo $data_u['id']; ?>">
+                                    <img src="<?php echo $url; ?>" alt="发帖人" title="<?php echo $data_u['name'];?>" width="31" height="29">
                                 </a>
                             </td>
                             <td class="ltd2">
-                                <a href="postShow.php?postId=<?php echo $data_sm_post['postId'];?>&sid=<?php echo $data_smu['sid'];?>" title="<?php echo $data_sm_post['postTitle'];?>">
-                                    <?php echo $data_sm_post['postTitle']; ?>
-                                </a>
+                                <?php
+                                    if(isset($userStatus)){
+                                        if ($userStatus == 1){ //用户需要人工验证
+                                            echo "<a href='userNotVerify.php' title='{$data_sm_post['postTitle']}'>{$data_sm_post['postTitle']}</a>{$img}";
+                                        }else{ //用户已通过系统自动验证
+                                            if ($status == 1){ //用户被禁止发言
+                                                echo "<a href='forbidTip.php' title='{$data_sm_post['postTitle']}'>{$data_sm_post['postTitle']}</a>{$img}";
+                                            }else{
+                                                echo "<a href='postShow.php?postId={$data_sm_post['postId']}&sid={$_GET['sid']}' title='{$data_sm_post['postTitle']}'>{$data_sm_post['postTitle']}</a>{$img}";
+                                            }
+                                        }
+                                    }else{ //游客
+                                        echo "<a href='postShow.php?postId={$data_sm_post['postId']}&sid={$_GET['sid']}' title='{$data_sm_post['postTitle']}'>{$data_sm_post['postTitle']}</a>{$img}";
+                                    }
+                                ?>
+
                             </td>
-                            <td class="ltd3">发布时间：<?php echo tranTime(strtotime($data_sm_post['postTime'])); ?></td>
-                            <td class="ltd4"><a href="#"></a></td>
+                            <td class="ltd4"><a href="userProfile.php?uid=<?php echo $data_u['id']; ?>"><?php echo $data_u['name'];?></a></td>
+                            <td class="ltd5"><a href="#"><?php echo $rep_nums;?> / <?php echo $data_sm_post['times'];?></a></td>
+                            <td class="ltd3"><?php echo tranTime(strtotime($data_sm_post['updateTime'])); ?></td>
                         </tr>
                     <?php }
                 }else{
-                    echo "<tr><td colspan='4'>暂无帖子...</td></tr>";
+                    echo "<tr><td colspan='5'>暂无帖子...</td></tr>";
                 }
                 ?>
                 <tr>
-                    <td colspan="4">
-                        <button type="button" sid=<?php echo $_GET['sid'];?>  class="btn btn-primary" id="pubBtn"><i class="fa fa-edit"></i>发帖</button>
+                    <td colspan="5">
+                        <?php
+                            if (isset($userStatus)){
+                                if ($userStatus == 1){ //用户需要人工验证
+                                    echo "<a href='userNotVerify.php' class='btn btn-primary' style='float: left;display: inline-block;margin-right: 200px;'><i class='fa fa-edit'></i>发帖</a>";
+                                }else{
+                                    if ($status == 1){ //禁止发言
+                                        echo "<a href='forbidTip.php' class='btn btn-primary' style='float: left;display: inline-block;margin-right: 200px;'><i class='fa fa-edit'></i>发帖</a>";
+                                    }else{
+                                        echo "<button type='button' sid={$_GET['sid']}  class='btn btn-primary' id='pubBtn'><i class='fa fa-edit'></i>发帖</button>";
+                                    }
+                                }
+                            }else{//游客
+                                echo "<button type='button' sid={$_GET['sid']}  class='btn btn-primary' id='pubBtn'><i class='fa fa-edit'></i>发帖</button>";
+                            }
+                        ?>
+
                         <ul class="pagination" style="display: inline; margin: 0;padding: 0;">
                             <?php
                                 echo $data_page['html'];
@@ -160,14 +215,25 @@
                     <?php
                     //当没有登录时，显示不能快速发帖
                     if (empty($member_id)){
-                        $htmlisLogin = <<<EOT
-                           <div class="isLogin">
+                           echo '<div class="isLogin">
                                 您需要登录后才可以发帖
                                 <a href="login.php" class="xi2">登录</a> |
                                 <a href="register.php" class="xi2">立即注册</a>
-                           </div>
-EOT;
-                        echo $htmlisLogin;
+                           </div>';
+                    }else{
+                        if ($userStatus == 1){ //用户人工验证
+                            echo '<div class="isLogin">
+                                您现在无权发帖。
+                                <a href="userNotVerify.php" class="xi2">点击查看原因</a>
+                                </div>';
+                        }else{
+                            if ($status == 1){ //禁止发言
+                                echo '<div class="isLogin">
+                                您现在无权发帖。
+                                <a href="forbidTip.php" class="xi2">点击查看原因</a>
+                                </div>';
+                            }
+                        }
                     }
                     ?>
                 </div>
@@ -176,7 +242,22 @@ EOT;
                     <img src="inc/vcode.php" alt="验证码" title="点击刷新验证码" id="yzmpic">
                 </div>
                 <div class="row mlr0">
-                    <button type="button" sid="<?php echo $_GET['sid'];?>" id="fastPubBtn" class="btn btn-primary"><i class="fa fa-edit"></i>发表帖子</button>
+                    <?php
+                        if (empty($member_id)){
+                            echo "<button type='button' sid='{$_GET['sid']}' id='fastPubBtn' class='btn btn-primary'><i class='fa fa-edit'></i>发表帖子</button>";
+                        }else{
+                            if ($userStatus == 1){ //用户需要人工验证
+                                echo "<a href='userNotVerify.php' class='btn btn-primary'><i class='fa fa-edit'></i>发表帖子</a>";
+                            }else{
+                                if ($status == 1){ //禁止发言
+                                    echo "<a href='forbidTip.php' class='btn btn-primary'><i class='fa fa-edit'></i>发表帖子</a>";
+                                }else{
+                                    echo "<button type='button' sid='{$_GET['sid']}' id='fastPubBtn' class='btn btn-primary'><i class='fa fa-edit'></i>发表帖子</button>";
+                                }
+                            }
+
+                        }
+                    ?>
                 </div>
             </form>
         </div>

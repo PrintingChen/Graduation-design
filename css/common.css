@@ -110,7 +110,6 @@ body{
     color: #369;
 }
 #nav{
-    width: 400px;
     float: left;
 }
 #navbar{
@@ -203,4 +202,36 @@ body{
 
 /*提示页面*/
 
+.forbid-status{
+    border: 3px solid #FFC600;
+    padding: 41px;
+    width: 66%;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 50px;
+    font-size: 15px;
+    margin-bottom: 350px;
+}
+.forbid-status img{
+    width: 32px;
+    height:32px;
+}
+
+.notice{
+    padding: 5px 0;
+}
+.notice p{
+    display: inline;
+}
+i.fa.fa-volume-up {
+    font-size: 20px;
+    margin-right:5px;
+    position: absolute;
+    top: 5px;
+    color: #FFE302;
+}
+marquee {
+    position: absolute;
+    margin-top: 0px;
+}
 

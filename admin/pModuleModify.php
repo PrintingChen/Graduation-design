@@ -10,12 +10,7 @@
     <script src="../layui/layui.js"></script>
     <script src="../js/formValidator.js"></script>
     <script src="js/admin-common.js"></script>
-    <script>
-        $(function(){
-            //验证表单
-            $("#form-mdfsmodule").formValidator();
-        });
-    </script>
+    <script src="js/pModuleModify.js"></script>
 </head>
 <?php
     //开启session
@@ -27,7 +22,7 @@
     //调用数据库连接函数
     $link = connect();
     //管理员是否登录
-    if (!manage_login_state($link)) {
+    if (!($mid = manage_login_state($link))) {
         promptBox('您还未登录', 5, 'login.php');
         exit();
     }
@@ -47,31 +42,6 @@
     }
     //查询出父版块信息
     $data_pm = fetch_array(execute($link, $sql_pm));
-
-    //开始处理提交修改的信息
-    if (isset($_POST['btn-mdfpm'])) {
-        //判断修改的父版块名称是否已经存在
-        $sql_pmn = "select * from parent_module where pmoduleName='{$_POST['pmName']}' and pid!={$pid}";
-        if (nums($link, $sql_pmn)) {
-            promptBox('修改失败，此条父版块信息已经存在', 5, 'pModuleModify.php?pid='.$pid.'');
-            exit;
-        }
-        //验证描述内容
-        $pmoduleDesc = escape($link, $_POST['pmoduleDesc']);
-        if ($_POST['moderName'] == "暂无版主"){
-            $sql_upd = "update parent_module set pmoduleName='{$_POST['pmName']}', pmoduleDesc='{$pmoduleDesc}' where pid={$pid}";
-        }else{
-            $sql_upd = "update parent_module set pmoduleName='{$_POST['pmName']}', moderatorId={$_POST['moderName']}, pmoduleDesc='{$pmoduleDesc}' where pid={$pid}";
-        }
-        execute($link, $sql_upd);
-        if (mysqli_affected_rows($link)) {
-            promptBox('修改成功', 6,'pModuleList.php');
-            exit;
-        }else {
-            promptBox('修改失败', 5,'pModuleModify.php?pid='.$pid.'');
-            //exit;
-        }
-    }
 ?>
 <body>
 <!--引入头部-->
@@ -86,7 +56,8 @@
         <div class="panel-head"><strong><span class="fa fa-key"></span> 修改父版块 - <?php echo $data_pm['pmoduleName']?></strong><a
                 href="pModuleList.php" style="float: right;"><i class="fa fa-mail-reply"></i></a></div>
         <div class="body-content">
-            <form action="pModuleModify.php?pid=<?php echo $_GET['pid']?>" method="post" id="form-mdfsmodule" enctype="multipart/form-data">
+        <!-- action="pModuleModify.php?pid=<?php //echo $_GET['pid']?>" method="post"-->
+            <form id="form-mdfsmodule">
                 <div class="form-group" style="overflow: hidden;">
                     <div class="info"><label for="">父版块名称：</label></div>
                     <div class="field">
@@ -107,7 +78,7 @@
                             //查询出所有的用户，以便后面选择一个作为版主
                             $sql_user = "select * from user";
                             $res_user = execute($link, $sql_user);
-                            $str = "";
+                            $str = "<option value='0'>无</option>";
                             while ($data_user = fetch_array($res_user)){
                                 $str .= "<option value='{$data_user['id']}'>{$data_user['name']}</option>";
                             }
@@ -118,7 +89,7 @@
                                 $data_curr = fetch_array(execute($link, $sql_curr));
                                 echo "<option value='{$data_curr['id']}'>{$data_curr['name']}</option>".$str;
                             }else{
-                                echo "<option>暂无版主</option>.$str";
+                                echo "<option value='0'>暂无版主</option>.$str";
                             }
                         ?>
                         </select>
@@ -133,7 +104,7 @@
                 <div class="form-group" style="overflow: hidden;">
                     <div class="info"><label for=""></label></div>
                     <div class="field">
-                        <button name="btn-mdfpm" class="btn btn-info btn-custom" id="btn-mdfpm"><i class="fa fa-check-square-o custom"></i>提交</button>
+                        <button type="button" pid="<?php echo $pid;?>" class="btn btn-info btn-custom" id="btn-mdfpm"><i class="fa fa-check-square-o custom"></i>提交</button>
                     </div>
                 </div>
             </form>

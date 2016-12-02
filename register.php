@@ -10,6 +10,7 @@
     <script src="js/jquery-1.12.2.min.js"></script>
     <script src="layui/layui.js"></script>
     <script src="js/formValidator.js"></script>
+    <script src="js/common.js"></script>
     <script src="js/register.js"></script>
 </head>
 <?php
@@ -23,7 +24,7 @@
     $link = connect();
     //判断当前是否为登录状态
     if (login_state($link)){
-        skip('index.php', 'error', '您已经登录，无法进行此操作^_^');
+        promptBox('您已经登录，无法进行此操作', 5, 'index.php');
         exit();
     }
 ?>
@@ -34,9 +35,9 @@
 <?php include_once "inc/nav.inc.php"?>
 <div id="position">
     <div class="container">
-        <i class="fa fa-map-marker"></i>
+        <i class="fa fa-home"></i>
         <a href="index.php">首页</a>
-        >>
+        >
         <a href="register.php">立即注册</a>
     </div>
 </div>
@@ -44,7 +45,7 @@
     <div class="bm" id="main-message">
         <div class="bm-h">
             <span class="y">
-                <a href="#">已有帐号？现在登录</a>
+                <a href="login.php">已有帐号？现在登录</a>
             </span>
             <h3 class="login-info">
                 立即注册

@@ -144,6 +144,60 @@ $(function () {
                 }
             });
         });
+        //更新密码
+        $("#mdfpswBtn").on("click", function () {
+            //验证数据
+            //旧密码不能为空
+            if($("#opsw").val() == 0){
+                layer.msg("旧密码不能为空", {icon: 5, time: 1000}, function () {
+                    $("#opsw").focus();
+                });
+                return false;
+            }
+            //新密码不能为空
+            if($("#npsw").val() == 0){
+                layer.msg("新密码不能为空", {icon: 5, time: 1000}, function () {
+                    $("#npsw").focus();
+                });
+                return false;
+            }
+            //确认密码
+            if($("#repsw").val() != $("#npsw").val()){
+                layer.msg("两次密码不一致", {icon: 5, time: 1000}, function () {
+                    $("#repsw").focus();
+                });
+                return false;
+            }
+            //验证码
+            if($("#yzm").val().length != 4){
+                layer.msg("验证码必须为4位", {icon: 5, time: 1000}, function () {
+                    $("#yzm").focus();
+                });
+                return false;
+            }
+            $.ajax({
+                type: "post",
+                url: "userModifyPswHandle.php",
+                data: $("#form-mdfpsw").serialize(),
+                success: function (response) {
+                    if(response == "yzmnotequal"){
+                        layer.msg("验证码错误", {icon: 5, time: 1000}, function () {
+                            $("#yzm").focus();
+                        });
+                    }else if(response == "opswerror"){
+                        layer.msg("原密码有误", {icon: 5, time: 1000}, function () {
+                            $("#opsw").focus();
+                        });
+                    }else if(response == "success"){
+                        layer.msg("密码修改成功", {icon: 1, time: 1000}, function () {
+                            window.location.href = "login.php";
+                        });
+                    }else if(response == "fail"){
+                        layer.msg("密码未改动", {icon: 5, time: 1000});
+                    }
+                }
+            });
+        });
     });
 
 });

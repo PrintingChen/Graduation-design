@@ -22,31 +22,8 @@
     require_once '../inc/common.inc.php';
     //调用数据库连接函数
     $link = connect();
-    //处理提交的数据
-    if (isset($_POST['addPModule'])){
-        //引入验证文件
-        include 'inc/addParentModule.func.php';
-        //验证版块名称
-        check_module_name($link, $_POST['pmoduleName']);
-        //验证描述内容
-        $pmoduleDesc = escape($link, $_POST['pmoduleDesc']);
-        //查询提交的父版块是否已存在
-        $sql_pm = "select pmoduleName from parent_module where pmoduleName='{$_POST['pmoduleName']}'";
-        //echo $sql_pm;exit;
-        if (nums($link, $sql_pm) == 1) {
-            promptBox('此父版块已存在，添加失败', 5, 'addParentModule.php');
-            exit;
-        }
-        //插入父版块
-        $sql_ins = "insert into parent_module(pmoduleName, pmoduleDesc, moderatorId) values('{$_POST['pmoduleName']}', '{$pmoduleDesc}', '{$_POST['addModerator']}')";
-        execute($link, $sql_ins);
-        if (mysqli_affected_rows($link)) {
-            promptBox('添加成功', 6,'pModuleList.php');
-        }else {
-            promptBox('添加失败', 5,'addParentModule.php');
-            exit();
-        }
-    }
+    //管理员是否登录
+    $mid = manage_login_state($link);
 ?>
 <body>
 <!--引入头部-->
@@ -60,7 +37,7 @@
     <div class="panel admin-panel">
         <div class="panel-head"><strong><span class="fa fa-plus-square-o"></span> 添加父版块</strong></div>
         <div class="body-content">
-            <form method="post" id="form-pmodule">
+            <form id="form-pmodule">
                 <div class="form-group" style="overflow: hidden;">
                     <div class="info"><label for="">父版块名称：</label></div>
                     <div class="field">
@@ -97,7 +74,7 @@
                 <div class="form-group" style="overflow: hidden;">
                     <div class="info"><label for=""></label></div>
                     <div class="field">
-                        <button class="btn btn-info btn-custom" type="submit" name="addPModule"><i class="fa fa-check-square-o custom"></i>提交</button>
+                        <button class="btn btn-info btn-custom" type="button" id="addPModule"><i class="fa fa-check-square-o custom"></i>提交</button>
                     </div>
                 </div>
             </form>

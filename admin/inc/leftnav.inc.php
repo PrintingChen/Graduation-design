@@ -1,11 +1,3 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: chenyt
- * Date: 2016/10/23
- * Time: 下午 03:17
- */
-?>
 <!-- 左侧栏导航 -->
 <div class="leftnav">
     <div class="leftnav-title">
@@ -16,7 +8,7 @@
     </div>
     <h2>
         <span><i class="fa fa-gear"></i></span>
-        基本设置
+        个人设置
     </h2>
     <ul>
         <li>
@@ -25,24 +17,71 @@
                 修改密码
             </a>
         </li>
+    </ul>
+    <?php
+        //查询当前登录的管理员的等级
+        $sql_currm = "select * from manager where mid={$mid}";
+        $data_currm = fetch_array(execute($link, $sql_currm));
+        //var_dump($data_currm);exit;
+        //echo $data_currm["power"];exit;
+        if ($data_currm["power"] == 1){
+    ?>
+            <h2>
+                <span><i class="fa fa-user"></i></span>
+                管理员管理
+            </h2>
+            <ul>
+                <li>
+                    <a href="managerList.php">
+                        <span><i class="fa fa-caret-right"></i></span>
+                        管理员列表
+                    </a>
+                </li>
+                <li>
+                    <a href="addManager.php">
+                        <span><i class="fa fa-caret-right"></i></span>
+                        添加管理员
+                    </a>
+                </li>
+            </ul>
+    <?php
+        }
+    ?>
+    <h2>
+        <span><i class="fa fa-cogs"></i></span>
+        基本设置
+    </h2>
+    <ul>
         <li>
-            <a href="#">
+            <a href="verify.php">
                 <span><i class="fa fa-caret-right"></i></span>
-                item2
+                审核设置
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href="systemNotice.php">
                 <span><i class="fa fa-caret-right"></i></span>
-                item3
+                系统公告
+            </a>
+        </li>
+        <li>
+            <a href="sensitiveWord.php">
+                <span><i class="fa fa-caret-right"></i></span>
+                词语过滤
             </a>
         </li>
     </ul>
     <h2>
-        <span><i class="fa fa-edit"></i></span>
+        <span><i class="fa fa-users"></i></span>
         用户管理
     </h2>
     <ul>
+        <li>
+            <a href="userList.php">
+                <span><i class="fa fa-caret-right"></i></span>
+                用户列表
+            </a>
+        </li>
         <li>
             <a href="addUser.php">
                 <span><i class="fa fa-caret-right"></i></span>
@@ -50,14 +89,20 @@
             </a>
         </li>
         <li>
-            <a href="userList.php">
+            <a href="forbidUserSearch.php">
                 <span><i class="fa fa-caret-right"></i></span>
-                用户列表
+                禁止用户
+            </a>
+        </li>
+        <li>
+            <a href="verifyUser.php">
+                <span><i class="fa fa-caret-right"></i></span>
+                审核用户
             </a>
         </li>
     </ul>
     <h2>
-        <span><i class="fa fa-edit"></i></span>
+        <span><i class="fa fa-th"></i></span>
         版块管理
     </h2>
     <ul>
@@ -87,7 +132,7 @@
         </li>
     </ul>
     <h2>
-        <span><i class="fa fa-edit"></i></span>
+        <span><i class="fa fa-comments"></i></span>
         内容管理
     </h2>
     <ul>
@@ -95,6 +140,12 @@
             <a href="postList.php">
                 <span><i class="fa fa-caret-right"></i></span>
                 帖子列表
+            </a>
+        </li>
+        <li>
+            <a href="verifyPostStatus.php">
+                <span><i class="fa fa-caret-right"></i></span>
+                审核帖子
             </a>
         </li>
         <li>

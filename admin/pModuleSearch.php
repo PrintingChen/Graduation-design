@@ -10,24 +10,8 @@
     <script src="../js/jquery-3.1.1.min.js"></script>
     <script src="../layui/layui.js"></script>
     <script src="js/admin-common.js"></script>
+    <script src="js/pModuleSearch.js"></script>
     <script src="../js/formValidator.js"></script>
-    <script>
-        $(function(){
-            //layui组件
-            layui.use("layer", function () {
-                var layer = layui.layer;
-                //删除单条记录
-                $(".delPMBtn").on("click", function () {
-                    $this = $(this);
-                    layer.confirm("确定要删除吗？", {icon : 3, title: "提示"}, function (index) {
-                        $pid = $this.attr('pid');
-                        window.location.href = "delPModule.php?pid="+$pid+"";
-                        layer.close(index);
-                    });
-                });
-            });
-        });
-    </script>
 </head>
 <?php
     //开启session
@@ -38,6 +22,8 @@
     require_once '../inc/common.inc.php';
     //调用数据库连接函数
     $link = connect();
+    //管理员是否登录
+    $mid = manage_login_state($link);
     //查询出父版块的信息
     $sql_pm = "select * from parent_module";
     $res_pm = execute($link, $sql_pm);

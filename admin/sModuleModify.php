@@ -10,6 +10,7 @@
     <script src="../layui/layui.js"></script>
     <script src="../js/formValidator.js"></script>
     <script src="js/admin-common.js"></script>
+    <script src="js/sModuleModify.js"></script>
     <script>
         $(function(){
             //验证表单
@@ -27,7 +28,7 @@
     //调用数据库连接函数
     $link = connect();
     //管理员是否登录
-    if (!manage_login_state($link)) {
+    if (!($mid = manage_login_state($link))) {
         promptBox('您还未登录', 5, 'login.php');
         exit();
     }

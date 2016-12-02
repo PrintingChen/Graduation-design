@@ -16,7 +16,25 @@
             退出登录
         </a>
     </div>
+
     <div class="time">
+        <em class="manage-info">
+            <?php
+                //查询出当前用户信息
+                if (isset($mid)){
+                    $sql = "select * from manager where mid={$mid}";
+                    $data_man = fetch_array(execute($link, $sql));
+                    $powerType = "";
+                    if ($data_man['power'] == 0){
+                        $powerType = "普通管理员";
+                    }else if($data_man['power'] == 1){
+                        $powerType = "超级管理员";
+                    }
+                }
+            ?>
+            您好，<?php echo $_SESSION['manage']['name'];?>
+            [<?php echo $powerType;?>]
+        </em>
         系统时间：<span>2016年11月15日 20:39:57</span>
     </div>
 </div>

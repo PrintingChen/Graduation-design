@@ -46,8 +46,8 @@
     $reply_count = nums($link, $sql_reply_total);
     //用户头像
     $upicurl = "";
-    if(!empty($data_user['photo'])){
-        $upicurl = $data_user['photo'];
+    if(!empty($data['photo'])){
+        $upicurl = $data['photo'];
     }else{
         $upicurl = "img/noavatar_small.gif";
     }
@@ -82,7 +82,7 @@
                         <em class="xg2">统计信息</em>
                         <a href="userPost.php?uid=<?php echo $data['id'];?>">帖子数 <?php echo $count;?></a>
                         <span class="pipe">|</span>
-                        <a href="#">回帖数 <?php echo $reply_count;?></a>
+                        <a href="userReply.php?uid=<?php echo $_GET['uid'];?>">回帖数 <?php echo $reply_count;?></a>
                     </li>
                 </ul>
                 <ul class="pbm pf_l">

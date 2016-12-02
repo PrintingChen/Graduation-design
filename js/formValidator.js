@@ -33,7 +33,7 @@
 		//dom对象和jquery对象是有区别
 		//dom.className dom.setAttribute
 		//$.addClass() $.attr()
-		this.$fields = this.find("input,select,textarea").not("[type=button],[type=reset],[type=submit]");
+		this.$fields = this.find("input,select,textarea").not("[type=button],[type=reset],[type=submit],[type=radio]");
 		this.$fields.on("focus",function(){
 			$(this).next().remove();
 		}).on("blur",function(){

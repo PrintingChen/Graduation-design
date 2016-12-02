@@ -26,7 +26,7 @@
     //调用数据库连接函数
     $link = connect();
     //管理员是否登录
-    if (!manage_login_state($link)) {
+    if (!($mid = manage_login_state($link))) {
         promptBox('您还未登录！', 5, 'login.php');
         exit();
     }
@@ -36,7 +36,7 @@
     //计算用户的数量
     $nums_user = nums($link, $sql_user);
     //用户分页
-    $page = page($nums_user, 3);
+    $page = page($nums_user, 5);
     $sql_page = "select * from user order by id asc {$page['limit']}";
     $res_page = execute($link, $sql_page);
 
@@ -62,17 +62,36 @@
                         <input type="text" class="form-control" name="keywords" id="keywords" placeholder="请输入关键字">
                     </li>
                     <li>关键字搜索：</li>
+                    <li>
+                        <select name="forbid-status" id="forbid-status" class="form-control">
+                            <option value="">选择状态</option>
+                            <option value="1">正常状态</option>
+                            <option value="2">禁止发言</option>
+                            <option value="3">禁止访问</option>
+                        </select>
+                    </li>
+                    <li>按权限状态：</li>
+                    <li>
+                        <select name="verify-status" id="verify-status" class="form-control">
+                            <option value="">选择状态</option>
+                            <option value="1">通过</option>
+                            <option value="2">未通过</option>
+                        </select>
+                    </li>
+                    <li>按审核状态：</li>
                 </ul>
             </div>
             <div class="body-content" style="padding-bottom: 0;">
                 <table class="table table-hover" style="margin-bottom: 0;">
                     <thead>
                         <th style="width: 50px;">ID</th>
-                        <th>用户名</th>
-                        <th>头衔</th>
-                        <th>Email</th>
-                        <th>发帖数</th>
-                        <th>操作</th>
+                        <th class="a" style="width: 16%;">用户名</th>
+                        <th class="b" style="width: 10%;">头衔</th>
+                        <th class="c" style="width: 20%;">Email</th>
+                        <th style="width: 5%;">发帖数</th>
+                        <th style="width: 8%;">审核状态</th>
+                        <th style="width: 10%;">权限状态</th>
+                        <th class="d">操作</th>
                     </thead>
                     <tbody>
                     <?php
@@ -84,28 +103,58 @@
                     ?>
                         <tr>
                             <td><input type="checkbox" id="check" name="del[]" value="<?php echo $data_user['id']?>"><?php echo $data_user['id']?></td>
-                            <td><?php echo $data_user['name']?></td>
-                            <td><?php if($data_user['level'] != 0){ echo "版主";}else{ echo "普通用户";}?></td>
+                            <td><a href="../userProfile.php?uid=<?php echo $data_user['id'];?>"><?php echo $data_user['name']?></a></td>
+                            <td>
+                                <?php
+                                    if($data_user['userType'] == 1){
+                                        echo "<span style='color:#428BCA;'>版主</span>";
+                                    }else{
+                                        echo "普通用户";
+                                    }
+                                ?>
+                            </td>
                             <td><?php echo $data_user['email']?></td>
                             <td><?php echo $post_count;?></td>
                             <td>
-                                <a href="" class="btn-primary btn"><i class="fa fa-toggle-on"></i>权限</a>
+                                <?php
+                                    //用户的状态
+                                    if ($data_user['userStatus'] == 1){ //未验证通过
+                                        echo "<span style='color:#D9534F;'>未通过</span>";
+                                    }else{
+                                        echo "<span style='color:#22CC77;'>通过</span>";
+                                    }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                    //当前用户的权限状态
+                                    if ($data_user['isForbid'] == 0){
+                                        echo "正常状态";
+                                    }else if($data_user['isForbid'] == 1){
+                                        echo "<span style='color:#D9534F;'>禁止发言</span>";
+                                    }else if($data_user['isForbid'] == 2){
+                                        echo "<span style='color:#D9534F;'>禁止访问</span>";
+                                    }
+                                ?>
+                            </td>
+                            <td>
                                 <a href="userEdit.php?uid=<?php echo $data_user['id']?>" class="btn-primary btn"><i class="fa fa-edit"></i>修改</a>
                                 <button type="button" uid="<?php echo $data_user['id'];?>" class="btn-danger btn delUserBtn"><i class="fa fa-trash-o"></i>删除</button>
+                                <a href="forbidUser.php?uid=<?php echo $data_user['id'];?>" class="btn-info btn " id="forbidBtn"><i class="fa fa-ban"></i>禁止用户</a>
                             </td>
                         </tr>
                     <?php
                         }
                     ?>
                         <tr>
-                            <td colspan="6" style="text-align: left; padding-left: 13px;">
+                            <td colspan="8" style="text-align: left; padding-left: 13px;">
                                 <a href="#" class="btn btn-primary" id="selectAll">全选</a>
                                 <a href="#" class="btn btn-primary" id="selectReverse">反选</a>
                                 <button type="button" class="btn-danger btn" id="delAll" name="delAll"><i class="fa fa-trash-o"></i>删除所选</button>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="6" style="position: relative;">
+                            <td colspan="8" style="position: relative;">
                                 <ul class="pagination" style="margin-bottom: 0;">
                                     <?php
                                         echo $page['html'];

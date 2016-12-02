@@ -148,6 +148,7 @@ ul,li,li ul {
 }
 #btn{
     padding: 6px 20px;
+    width:100%;
 }
 .fa{
     margin-right: 3px;

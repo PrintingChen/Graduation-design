@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../css/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/userList.css">
+    <link rel="stylesheet" href="css/postList.css">
     <script src="../js/jquery-3.1.1.min.js"></script>
     <script src="../layui/layui.js"></script>
     <script src="js/admin-common.js"></script>
@@ -22,6 +23,8 @@
     require_once '../inc/common.inc.php';
     //调用数据库连接函数
     $link = connect();
+    //管理员是否登录
+    $mid = manage_login_state($link);
     //当提交数据之后
     if (isset($_GET['search'])){
         //获取查询条件
@@ -32,6 +35,10 @@
         if(!empty($_GET['post-person'])){
             $wherelist[] = "postuid={$_GET['post-person']}";
         }
+        if(!empty($_GET['verify-status'])){
+            $st = $_GET['verify-status'] - 1;
+            $wherelist[] = "postStatus={$st}";
+        }
         if(!empty($_GET['keywords'])){
             $wherelist[] = "postTitle like '%{$_GET['keywords']}%'";
         }
@@ -39,6 +46,7 @@
         if(count($wherelist) > 0){
             $where = " where ".implode(' AND ' , $wherelist);
         }
+        //echo $where;exit;
         //判断查询条件
         //$where = isset($where) ? $where : '';
         if (isset($where)){
@@ -76,6 +84,7 @@
                         <th class="th5">回复</th>
                         <th class="th6">浏览</th>
                         <th class="th7">最后发表</th>
+                        <th class="th9" style="width: 8%;">审核状态</th>
                         <th class="th8">操作</th>
                     </thead>
                     <tbody>
@@ -83,29 +92,48 @@
                     //输出查询到的所有帖子
                     if ($nums){ //当搜索到记录时
                         while ($data_post = fetch_array($res_search)){
-                            //var_dump($data_post);exit;
-                            //查询出子版块对应的回复信息，发帖作者
-                            $sql_postinfo = "select * from user u,reply rep,sub_module sm where rep.tpostId={$data_post['postId']} and sm.sid={$data_post['tsmoduleId']} and u.id={$data_post['postuid']}";
-                            $rep_count = nums($link, $sql_postinfo);
-                            $res_postinfo = execute($link, $sql_postinfo);
-                            $data_postinfo = fetch_array($res_postinfo);
+                            //查询帖子对应的回复信息，
+                            $sql_rep = "select * from reply where tpostId={$data_post['postId']} ORDER BY rtime DESC";
+                            $data_rep = fetch_array(execute($link, $sql_rep));
+                            $rep_count = nums($link, $sql_rep);
+                            //帖子对应的子版块
+                            $sql_sm = "select * from sub_module where sid={$data_post['tsmoduleId']}";
+                            $data_sm = fetch_array(execute($link, $sql_sm));
+                            //发帖作者
+                            $sql_u = "select * from user where id={$data_post['postuid']}";
+                            $data_u = fetch_array(execute($link, $sql_u));
                     ?>
                             <tr>
-                                <td><input type="checkbox" value="<?php echo $data_post['postId'];?>" id="check" name="del[]">&nbsp;<?php echo $data_post['postId'];?></td>
-                                <td class="ae"><a href="../postShow.php?postId=<?php echo $data_post['postId'];?>&sid=<?php echo $data_postinfo['sid'];?>"><?php echo $data_post['postTitle'];?></a></td>
-                                <td class="ae"><a href="../sModuleList.php?sid=<?php echo $data_postinfo['sid'];?>"><?php echo $data_postinfo['smoduleName'];?></a></td>
-                                <td><?php echo $data_postinfo['name'];?></td>
+                                <td>
+                                    <input type="checkbox" value="<?php echo $data_post['postId'];?>" id="check" name="del[]">&nbsp;<?php echo $data_post['postId'];?>
+                                </td>
+                                <td class="ae">
+                                    <a href="../postShow.php?postId=<?php echo $data_post['postId'];?>&sid=<?php echo $data_sm['sid'];?>"><?php echo $data_post['postTitle'];?></a>
+                                </td>
+                                <td class="ae">
+                                    <a href="../sModuleList.php?sid=<?php echo $data_sm['sid'];?>"><?php echo $data_sm['smoduleName'];?></a>
+                                </td>
+                                <td><?php echo $data_u['name'];?></td>
                                 <td><?php echo $rep_count;?></td>
                                 <td><?php echo $data_post['times'];?></td>
                                 <td><?php echo $data_post['updateTime'];?></td>
                                 <td>
-                                    <a href="postModify.php?postId=<?php echo $data_post['postId'];?>&sid=<?php echo $data_postinfo['sid'];?>" class="btn-primary btn"><i class="fa fa-edit"></i>修改</a>
+                                    <?php
+                                        if ($data_post['postStatus'] == 1){ //未验证通过
+                                            echo "<span style='color:#D9534F;'>未通过</span>";
+                                        }else{
+                                            echo "<span style='color:#22CC77;'>通过</span>";
+                                        }
+                                    ?>
+                                </td>
+                                <td>
+                                    <a href="postModify.php?postId=<?php echo $data_post['postId'];?>&sid=<?php echo $data_sm['sid'];?>" class="btn-primary btn"><i class="fa fa-edit"></i>修改</a>
                                     <button type="button" postId="<?php echo $data_post['postId'];?>" class="btn-danger btn delPostBtn"><i class="fa fa-trash-o"></i>删除</button>
                                 </td>
                             </tr>
                         <?php }
                     }else{
-                        echo "<tr><td colspan='8'>搜索不到记录，请重试...</td></tr>";
+                        echo "<tr><td colspan='9'>搜索不到记录，请重试...</td></tr>";
                     }?>
                     </tbody>
                 </table>

@@ -47,6 +47,7 @@ $(function(){
                 url: "registerHandle.php",
                 data: $("#form-login").serialize(),
                 success: function (response) {
+                    //console.log(response);
                     if(response == "yzmnoequal"){
                         layer.msg("验证码错误", {icon: 5, time: 1000}, function () {
                             $("#yzm").focus();

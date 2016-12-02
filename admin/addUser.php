@@ -11,38 +11,24 @@
     <script src="../layui/layui.js"></script>
     <script src="../js/formValidator.js"></script>
     <script src="js/admin-common.js"></script>
-    <script>
-        $(function(){
-            //验证表单
-            $("#form-mdfpsw").formValidator();
-            //ajax添加用户
-            $("#btn-adduser").on("click", function () {
-                layui.use("layer", function () {
-                    var layer = layui.layer;
-                    $.ajax({
-                        type : "post",
-                        url : "addUserHandle.php",
-                        data : $("#form-mdfpsw").serialize(),
-                        success : function (response) {
-                            if(response == "empty"){
-                                layer.msg("数据不能为空", {icon : 5, time : 800});
-                            }else if(response == "useryes"){
-                                layer.msg("此用户已存在", {icon : 5, time : 800});
-                            }else if(response == "ok"){
-                                layer.msg("用户添加成功", {icon : 6, time : 800});
-                                setTimeout(function () {
-                                    window.location.href = "userList.php";
-                                }, 1000);
-                            }else if(response == "no"){
-                                layer.msg("用户添加失败", {icon : 5, time : 800});
-                            }
-                        }
-                    });
-                });
-            });
-        });
-    </script>
+    <script src="js/addUser.js"></script>
 </head>
+<?php
+    //开启session
+    session_start();
+    //定义常量ON来获取访问页面的权限
+    define('ON', true);
+    //引入公共文件
+    require_once '../inc/common.inc.php';
+    //调用数据库连接函数
+    $link = connect();
+    //管理员是否登录
+    if (!($mid = manage_login_state($link))) {
+        promptBox('您还未登录！', 5, 'login.php');
+        exit;
+    }
+
+?>
 <body>
 <!--引入头部-->
 <?php include_once 'inc/header.inc.php';?>
@@ -79,7 +65,7 @@
                 <div class="form-group" style="overflow: hidden;">
                     <div class="info"><label for="">确认密码：</label></div>
                     <div class="field">
-                        <input type="password" name="repassword" class="form-control w50" placeholder="请再次输入密码"
+                        <input type="password" name="repassword" id="repassword" class="form-control w50" placeholder="请再次输入密码"
                                data-notempty="true"
                                data-notempty-message="确认密码不能为空"
                                data-equalto="#password"
@@ -90,7 +76,7 @@
                 <div class="form-group" style="overflow: hidden;">
                     <div class="info"><label for="">Email：</label></div>
                     <div class="field">
-                        <input type="email" name="email" class="form-control w50" placeholder="请输入邮箱地址"
+                        <input type="email" name="email" id="email" class="form-control w50" placeholder="请输入邮箱地址"
                                data-notempty="true"
                                data-notempty-message="邮箱地址不能为空"
                                data-regex="^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$"

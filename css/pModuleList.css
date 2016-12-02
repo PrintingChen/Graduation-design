@@ -99,6 +99,10 @@
 }
 #smtable tr td.td2{
     width: 50%;
+    overflow: hidden;
+    white-space: nowrap;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
 }
 #smtable tr td.td3{
     width: 5%;
@@ -179,6 +183,18 @@ td.td6 {
 }
 .ltd2{
     width: 45%;
+}
+td.ltd4 {
+    width: 11%;
+    text-align: center;
+}
+td.ltd5 {
+    width: 10%;
+    text-align: center;
+}
+td.ltd3 {
+    text-align: center;
+    width: 13%;
 }
 #pubBtn{
     margin-right: 200px;

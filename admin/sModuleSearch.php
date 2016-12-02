@@ -38,6 +38,8 @@
     require_once '../inc/common.inc.php';
     //调用数据库连接函数
     $link = connect();
+    //管理员是否登录
+    $mid = manage_login_state($link);
     //查询出子版块的信息
     $sql_sm = "select * from sub_module";
     $res_sm = execute($link, $sql_sm);

@@ -248,7 +248,8 @@ EOT;
             $sql = "select * from manager where managerName='{$_SESSION['manage']['name']}' and managerPsw='{$_SESSION['manage']['psw']}'";
             $result = execute($link, $sql);
             if (mysqli_num_rows($result) == 1) {
-                return true;
+                $data_m = fetch_array($result);
+                return $data_m['mid'];
             }else{
                 return false;
             }

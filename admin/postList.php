@@ -22,7 +22,7 @@
     //调用数据库连接函数
     $link = connect();
     //管理员是否登录
-    if (!manage_login_state($link)) {
+    if (!($mid = manage_login_state($link))) {
         promptBox('您还未登录！', 5, 'login.php');
         exit();
     }
@@ -68,13 +68,21 @@
                         <select name="post-person" id="pmName" class="form-control">
                             <option value="">选择作者</option>
                             <?php
-                            //输出所有的作者
-                            $sql_user_d = "select * from user";
-                            $res_user_d = execute($link, $sql_user_d);
-                            while ($data_user_d = fetch_array($res_user_d)){
-                                echo "<option value='{$data_user_d['id']}'>{$data_user_d['name']}</option>";
-                            }
+                                //输出所有的作者
+                                $sql_user_d = "select * from user";
+                                $res_user_d = execute($link, $sql_user_d);
+                                while ($data_user_d = fetch_array($res_user_d)){
+                                    echo "<option value='{$data_user_d['id']}'>{$data_user_d['name']}</option>";
+                                }
                             ?>
+                        </select>
+                    </li>
+                    <li>按审核状态：</li>
+                    <li>
+                        <select name="verify-status" id="verify-status" class="form-control">
+                            <option value="">选择状态</option>
+                            <option value="1">通过</option>
+                            <option value="2">未通过</option>
                         </select>
                     </li>
                     <li>按关键字：</li>
@@ -96,6 +104,7 @@
                         <th class="th5">回复</th>
                         <th class="th6">浏览</th>
                         <th class="th7">最后发表</th>
+                        <th class="th9">审核状态</th>
                         <th class="th8">操作</th>
                     </thead>
                     <tbody>
@@ -131,6 +140,16 @@
                             ?>
                             </td>
                             <td>
+                                <?php
+                                    //帖子的状态
+                                    if ($data_post['postStatus'] == 1){ //未验证通过
+                                        echo "<span style='color:#D9534F;'>未通过</span>";
+                                    }else{
+                                        echo "<span style='color:#22CC77;'>通过</span>";
+                                    }
+                                ?>
+                            </td>
+                            <td>
                                 <a href="postModify.php?postId=<?php echo $data_post['postId'];?>&sid=<?php echo $data_sm['sid'];?>" class="btn-primary btn"><i class="fa fa-edit"></i>修改</a>
                                 <button type="button" postId="<?php echo $data_post['postId'];?>" class="btn-danger btn delPostBtn"><i class="fa fa-trash-o"></i>删除</button>
                             </td>
@@ -139,14 +158,14 @@
                     }
                     ?>
                     <tr>
-                        <td colspan="8" style="text-align: left; padding-left: 13px;">
+                        <td colspan="9" style="text-align: left; padding-left: 13px;">
                             <a href="#" class="btn btn-primary" id="selectAll">全选</a>
                             <a href="#" class="btn btn-primary" id="selectReverse">反选</a>
                             <button type="button" class="btn-danger btn" id="delAll" name="delAll"><i class="fa fa-trash-o"></i>删除所选</button>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="8" style="position: relative;">
+                        <td colspan="9" style="position: relative;">
                             <ul class="pagination" style="margin-bottom: 0;">
                                 <?php
                                     echo $page['html'];

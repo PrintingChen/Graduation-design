@@ -12,21 +12,7 @@
     <script src="../layui/laydate/laydate.js"></script>
     <script src="../js/formValidator.js"></script>
     <script src="js/admin-common.js"></script>
-    <script>
-        $(function () {
-            //edit
-            /*$("#editUser").on("click", function () {
-                $.ajax({
-                    type: "post",
-                    url: "userEditHandle.php",
-                    data:　$("#editUserform").serialize(),
-                    success: function (response) {
-                        console.log(response);
-                    }
-                });
-            });*/
-        });
-    </script>
+    <script src="js/userEdit.js"></script>
 </head>
 <?php
     //开启session
@@ -38,7 +24,7 @@
     //调用数据库连接函数
     $link = connect();
     //管理员是否登录
-    if (!manage_login_state($link)) {
+    if (!($mid = manage_login_state($link))) {
         promptBox('您还未登录！', 5, 'login.php');
         exit();
     }
@@ -58,50 +44,6 @@
     }
     //查询出用户信息
     $data_user = fetch_array(execute($link, $sql_user));
-    //用户的头像地址
-    if (!empty($data_user['photo'])){
-        $imgurl = "../".$data_user['photo'];
-    }else{
-        $imgurl = "../img/noavatar_middle.gif";
-    }
-    //更新数据
-    if (isset($_POST['editUser'])){
-        //密码需要更新时
-        if (!empty($_POST['repasswoerd'])){
-            $sql_upd = "update user set reallyName='{$_POST['reallyName']}', psw='{$_POST['repassword']}', 
-                        sex='{$_POST['sex']}', birthday='{$_POST['birthday']}',
-                        email='{$_POST['email']}', qq='{$_POST['qq']}', website='{$_POST['website']}',
-                        fixedTel='{$_POST['fixedTel']}', phone='{$_POST['phone']}',
-                        school='{$_POST['school']}', degree='{$_POST['degree']}', 
-                        company='{$_POST['company']}', 	profession='{$_POST['profession']}',
-                        job='{$_POST['job']}', income='{$_POST['income']}' where id={$uid}";
-            execute($link, $sql_upd);
-            if (mysqli_affected_rows($link)) {
-                promptBox('修改成功', 6,'userList.php');
-                //exit;
-            }else {
-                promptBox('修改失败', 5,'userEdit.php?uid='.$uid.'');
-                //exit();
-            }
-        }else{
-            //密码不需要更新时
-            $sql_upd = "update user set reallyName='{$_POST['reallyName']}', 
-                        sex='{$_POST['sex']}', birthday='{$_POST['birthday']}',
-                        email='{$_POST['email']}', qq='{$_POST['qq']}', website='{$_POST['website']}',
-                        fixedTel='{$_POST['fixedTel']}', phone='{$_POST['phone']}',
-                        school='{$_POST['school']}', degree='{$_POST['degree']}', 
-                        company='{$_POST['company']}', 	profession='{$_POST['profession']}',
-                        job='{$_POST['job']}', income='{$_POST['income']}' where id={$uid}";
-            execute($link, $sql_upd);
-            if (mysqli_affected_rows($link)) {
-                promptBox('修改成功', 6,'userList.php');
-                //exit;
-            }else {
-                promptBox('修改失败', 5,'userEdit.php?uid='.$uid.'');
-                //exit();
-            }
-        }
-    }
 ?>
 <body>
 <!--引入头部-->
@@ -112,7 +54,7 @@
 <?php include_once 'inc/position.inc.php';?>
 <!--主体部分-->
 <div class="admin">
-    <form action="userEdit.php?uid=<?php echo $uid;?>" id="editUserform" method="post">
+    <form id="editUserform">
         <div class="panel admin-panel">
             <div class="panel-head"><strong><span class="fa fa-edit"></span> 编辑用户 - <?php echo $data_user['name']?></strong><a href="userList.php" style="float: right;" title="返回上一层"><i class="fa fa-mail-reply"></i></a></div>
             <div class="body-content" style="padding-bottom: 0;">
@@ -131,7 +73,13 @@
                     <tr>
                         <td>权限：</td>
                         <td>
-                            <?php if($data_user['level'] != 0){ echo "版主";}else{ echo "普通用户";}?>
+                            <?php
+                                if($data_user['userType'] != 0){
+                                    echo "版主";
+                                }else{
+                                    echo "普通用户";
+                                }
+                            ?>
                         </td>
                     </tr>
                     <tr>
@@ -243,32 +191,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>发帖数：</td>
-                        <td>123</td>
-                    </tr>
-                    <tr>
-                        <td>注册 IP:</td>
-                        <td><?php echo $_SERVER['REMOTE_ADDR'];?></td>
-                    </tr>
-                    <tr>
-                        <td>注册时间：</td>
-                        <td><?php echo $data_user['registerTime']?></td>
-                    </tr>
-                    <tr>
-                        <td>上次登录时间：</td>
-                        <td><?php echo $data_user['lastLogin']?></td>
-                    </tr>
-                    <tr>
-                        <td>上次发表时间：</td>
-                        <td>2016年10月27日 16:52:20</td>
-                    </tr>
-                    <tr>
-                        <td>上次访问 IP：</td>
-                        <td>192.168.0.1</td>
-                    </tr>
-                    <tr>
                         <td>
-                            <button name="editUser" class="btn btn-primary" id="editUser"><i class="fa fa-check-square-o custom"></i>提交</button>
+                            <button type="button" uid="<?php echo $uid;?>" class="btn btn-primary" id="editUser"><i class="fa fa-check-square-o custom"></i>提交</button>
                         </td>
                         <td></td>
                     </tr>

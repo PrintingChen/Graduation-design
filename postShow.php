@@ -14,6 +14,7 @@
     <script src="kindeditor/kindeditor-all-min.js"></script>
     <script src="kindeditor/lang/zh-CN.js"></script>
     <script src="js/postShow.js"></script>
+    <script src="js/handle.js"></script>
 </head>
 <?php
     //开启session
@@ -26,6 +27,7 @@
     $link = connect();
     //判断当前是否为登录状态
     $member_id = login_state($link);
+
     //引入处理登录信息
     include_once "inc/handlerLogin.php";
     /*判断postId*/
@@ -48,6 +50,14 @@
     $post_msg = "select * from post p,sub_module sm,parent_module pm,user u where p.postId={$postId} and p.tsmoduleId=sm.sid and p.postuid=u.id and sm.tParenModuleId=pm.pid";
     $res_post = execute($link, $post_msg);
     $data_post = fetch_array($res_post);
+    //查询当前帖子对应的父版块
+    $topm_sql = "select * from parent_module where pid={$data_post['tParenModuleId']}";
+    $data_topm = fetch_array(execute($link, $topm_sql));
+    //判断是否为版主
+    if($member_id){
+        $sql_p = "select * from parent_module where pmoduleName='{$data_topm['pmoduleName']}' and moderatorId={$member_id}";
+        $nums_p = nums($link, $sql_p);
+    }
     //用户头像地址
     $imgurl = "";
     if (!empty($data_post['photo'])){
@@ -67,15 +77,51 @@
     //查询出当前帖子的回复信息(limit分页显示)
     $post_reply = "select * from reply where tpostId=$postId {$page['limit']}";
     $res_post_reply = execute($link, $post_reply);
-
-    //判断当前的帖子发帖人是否是当前登录用户发的帖子
+    //判断这条帖子是否为精华帖子
+    $img = "";
+    $isBoutique = "<a id='boutique' postId='{$postId}' sid='{$data_post['sid']}' href='JavaScript:void(0);'>精华</a>
+                   <span class='pipe'>|</span>";
+    $cancelBoutique = "";
+    $boutique = $data_post['isBoutique'];
+    if ($boutique){
+        $img = "<img id='jinhua' src='img/jinhua.gif'>";
+        $isBoutique = "";
+        $cancelBoutique = "<a id='cancelBoutique' postId='{$postId}' sid='{$data_post['sid']}' href='JavaScript:void(0);'>取消精华</a>
+                           <span class='pipe'>|</span>";
+    }
+    //判断帖子是否屏蔽
+    $shield = "<a id='shield' postId='{$postId}' sid='{$data_post['sid']}' href='javascript:void(0);'>屏蔽</a>";
+    $cancelshield = "";
+    $ishield = $data_post['isShield'];
+    if ($ishield){
+        $shield = "";
+        $cancelshield = "<a id='cancelshield' postId='{$postId}' sid='{$data_post['sid']}' href='javascript:void(0);'>取消屏蔽</a>";
+    }
+    //判断当前的帖子发帖人是否是当前登录用户发的帖子(或者时版主)，如果是则显示删除，编辑功能
     $edit = "";
     $delete = "";
-    if ($data_post['id'] == $member_id){
-        $edit = "<a class='editBtn' href='postEdit.php?postId={$postId}'>编辑</a>";
+    if (($data_post['id'] == $member_id) || ($member_id == $data_topm['moderatorId'])){
+        $edit = "<a class='editBtn' id='editpBtn' shield='{$ishield}' postId='{$postId}' sid='{$data_post['sid']}' href='javascript:void(0);'>编辑</a>";
         $delete = "<p postId='{$postId}' class='deleteBtn'>删除</p>";
     }
+
 ?>
+<script>
+    /*$(function () {
+        layui.use("layer", function () {
+            var layer = layui.layer;
+            $("#move").on("click", function () {
+                layer.open({
+                    type: 2,
+                    area: ['300px', '230px'],
+                    fix: false, //不固定
+                    maxmin: true,
+                    content: '1.html'
+                });
+            });
+        });
+    });*/
+</script>
 <body>
 <!--引入头部-->
 <?php include_once "inc/header.inc.php"?>
@@ -102,23 +148,43 @@
             ?>
         </ul>
     </div>
-    <div id="modmenu" class="xi2 pbm">
-        <a href="#">删除主题</a>
-        <span class="pipe">|</span>
-        <a href="#">精华</a>
-        <span class="pipe">|</span>
-        <a href="#">移动</a>
-        <span class="pipe">|</span>
-        <a href="#">置顶</a>
-        <span class="pipe">|</span>
-        <a href="#">屏蔽</a>
-    </div>
+    <?php
+        if(isset($member_id) && isset($nums_p) && $nums_p){
+    ?>
+            <div id="modmenu" class="xi2 pbm">
+                <a id="delTheme" postId=<?php echo $postId;?> sid=<?php echo $data_post['sid'];?> href="javascript:void(0);">删除主题</a>
+                <span class="pipe">|</span>
+                <?php echo $isBoutique;?>
+                <?php echo $cancelBoutique;?>
+                <a id="move" href="#">移动</a>
+                <span class="pipe">|</span>
+                <a href="#">置顶</a>
+                <span class="pipe">|</span>
+                <?php echo $shield;?>
+                <?php echo $cancelshield;?>
+            </div>
+    <?php
+        }
+    ?>
+
 <!--帖子展示-->
 <?php
     if($_GET['page'] == 1){
       $postTitle = htmlspecialchars($data_post['postTitle']);
       $postTime = tranTime(strtotime($data_post['postTime']));
-      $postContent = nl2br($data_post['postContent']);
+      $postContent = ""; //帖子内容
+      //判断帖子是否已通过审核
+      if ($data_post["postStatus"] == 1){
+          $postContent = "<span id='lock'><i class='fa fa-lock'></i><em class='tip'>提示：该帖内容还未通过审核，请联系管理员或版主</em></span>";
+      }else{
+          //判断帖子是否被屏蔽
+          if ($data_post['isShield']){
+              $postContent = "<span id='lock'><i class='fa fa-lock'></i><em class='tip'>提示：该帖被管理员或版主屏蔽，请联系管理员或版主</em></span>";
+          }else{
+              $postContent = nl2br($data_post['postContent']);
+          }
+      }
+
       $html=<<<EOT
         <div class="wrapContent">
             <div class="col-md-2 col-sm-2 col-xs-2" id="wcleft">
@@ -156,6 +222,7 @@
                     <h1>{$postTitle}</h1>
                 </div>
                 <div class="pls plsright"></div>
+                {$img}
                 <div class="authi">
                     <img class="authicn vm" src="img/online_moderator.gif" alt="">
                     <em>发表于 {$postTime}</em>
@@ -261,19 +328,11 @@ EOT;
                         <?php }?>
                         <?php echo nl2br($data_reply['rcontent']);?>
                     </div>
-                <!--<script>
-                    $(function () {
-                        layui.use("layer", function () {
-                            var layer = layui.layer;
-
-                        });
-                    });
-                </script>-->
                     <div class="po">
                         <a href="javascript:void(0);" class="quoteBtn quoteRepBtn" postId="<?php echo $postId;?>" quoteId="<?php echo $data_reply['rid'];?>">回复</a>
                         <?php
-                        //判断是否为当前登录用户自己发的帖，如果是则显示 编辑功能
-                        if ($member_id == $data_reply_msg['id']){
+                        //判断是否为当前登录用户自己发的帖（或者时版主），如果是则显示 编辑功能
+                        if (($member_id == $data_reply_msg['id']) || ($member_id == $data_topm['moderatorId'])){
                             echo "<a class='editBtn' href='replyEdit.php?rid={$data_reply['rid']}&postId={$postId}'>编辑</a>";
                             echo "<p rid='{$data_reply['rid']}' sid='{$data_post['sid']}' postId='{$postId}' class='deleteRepBtn'>删除</p>";
                         }

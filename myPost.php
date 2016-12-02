@@ -23,6 +23,15 @@
     $link = connect();
     //判断当前是否为登录状态
     $member_id = login_state($link);
+    //判断当前登录用户的访问状态
+    if ($member_id){
+        //查询用户状态
+        $sql_status = "select * from user where id={$member_id}";
+        $data_status = fetch_array(execute($link, $sql_status));
+        $status = $data_status['isForbid'];
+        //用户是否通过了验证状态
+        $userStatus = $data_status["userStatus"];
+    }
     //当前用户的信息
     $sql_user = "select * from user where id={$member_id}";
     $data_user = fetch_array(execute($link, $sql_user));
@@ -51,82 +60,200 @@
 <!--引入导航-->
 <?php include_once "inc/nav.inc.php"?>
 <div class="container" style="width: 990px;">
-    <div class="position">
-        <div class="z">
-            <a href="index.php" class="nvhm"><i class="fa fa-home"></i></a>
-            <em><i class="fa fa-angle-right"></i></em>
-            <a href="#">我的帖子</a>
-        </div>
-    </div>
-    <div class="pm-wrap">
-        <div class="pm">
-            <strong>我的帖子</strong>
-            <em>今日：</em>
-            <em><?php echo $ptotal_today;?></em>
-            <span class="pipe">|</span>
-            <em>昨日：</em>
-            <em><?php echo $ptotal_yesterday;?></em>
-            <span class="pipe">|</span>
-            <em>主题：</em>
-            <em><?php echo $post_total;?></em>
-        </div>
-        <div class="pm-desc">
-            <a href="publish.php" class="btn btn-primary"><i class="fa fa-edit"></i>发帖</a>
-        </div>
-    </div>
-    <div class="pm-sm">
-        <div class="pm-sm-top" style="position: relative;">
-            <h2>全部主题</h2>
-            <span class="reply poa">回复 /</span>
-            <span class="look poa">查看</span>
-            <span class="author poa">作者</span>
-            <span class="module poa">版块</span>
-            <span class="lastTime poa">最后发表时间</span>
-        </div>
-        <div class="pm-sm-list">
-            <table class="table table-condensed table-hover" id="smtable">
-                <?php
-                if($post_total) { //当存在帖子时
-                    //输出所有的帖子
-                    while ($data_post = fetch_array($res_post)) {
-                        //查询出当前帖子对应的所属子版块、,user u,reply rep where and u.id={$member_id} and rep.tpostId={$data_post['postId']}
-                        $sql_sm = "select * from sub_module where sid={$data_post['tsmoduleId']}";
-                        $data_sm = fetch_array(execute($link, $sql_sm));
-                        //当前帖子的回复数
-                        $sql_rep = "select * from reply where tpostId={$data_post['postId']}";
-                        $rep_total = nums($link, $sql_rep);
+    <?php
+    if(isset($status)) {//会员显示
+        if ($status == 2) {//会员，禁止显示
             ?>
+            <div class="forbid-status">
+                <img src="img/error.jpg" alt="">
+                抱歉，您的 IP 地址不在允许范围内，或您的账号被禁用，无法访问本站点
+            </div>
+            <?php
+        } else {//会员，非禁止显示
+            ?>
+            <div class="position">
+                <div class="z">
+                    <a href="index.php" class="nvhm"><i class="fa fa-home"></i></a>
+                    <em><i class="fa fa-angle-right"></i></em>
+                    <a href="#">我的帖子</a>
+                </div>
+            </div>
+            <div class="pm-wrap">
+                <div class="pm">
+                    <strong>我的帖子</strong>
+                    <em>今日：</em>
+                    <em><?php echo $ptotal_today;?></em>
+                    <span class="pipe">|</span>
+                    <em>昨日：</em>
+                    <em><?php echo $ptotal_yesterday;?></em>
+                    <span class="pipe">|</span>
+                    <em>主题：</em>
+                    <em><?php echo $post_total;?></em>
+                </div>
+                <div class="pm-desc">
+                    <?php
+                        if ($userStatus == 1){ //用户需要人工验证
+                            echo "<a href='userNotVerify.php' class='btn btn-primary'><i class='fa fa-edit'></i>发帖</a>";
+                        }else{
+                            if ($status == 1){ //禁止发言
+                                echo "<a href='forbidTip.php' class='btn btn-primary'><i class='fa fa-edit'></i>发帖</a>";
+                            }else{
+                                echo "<a href='publish.php' class='btn btn-primary'><i class='fa fa-edit'></i>发帖</a>";
+                            }
+                        }
+                    ?>
+                </div>
+            </div>
+            <div class="pm-sm">
+                <div class="pm-sm-top" style="position: relative;">
+                    <h2>全部主题</h2>
+                    <span class="reply poa" style="right: 165px">回复 /</span>
+                    <span class="look poa" style="right:132px;">查看</span>
+                    <span class="author poa" style="right: 255px;">作者</span>
+                    <span class="module poa" style="right: 404px;">版块</span>
+                    <span class="lastTime poa" >最后发表时间</span>
+                </div>
+                <div class="pm-sm-list">
+                    <table class="table table-condensed table-hover" id="smtable">
+                        <?php
+                        if($post_total) { //当存在帖子时
+                            //输出所有的帖子
+                            while ($data_post = fetch_array($res_post)) {
+                                //查询出当前帖子对应的所属子版块、,user u,reply rep where and u.id={$member_id} and rep.tpostId={$data_post['postId']}
+                                $sql_sm = "select * from sub_module where sid={$data_post['tsmoduleId']}";
+                                $data_sm = fetch_array(execute($link, $sql_sm));
+                                //当前帖子的回复数
+                                $sql_rep = "select * from reply where tpostId={$data_post['postId']}";
+                                $rep_total = nums($link, $sql_rep);
+                                ?>
+                                <tr>
+                                    <td class="td1">
+                                        <a href="#"><img src="img/folder_new.gif" width="31" height="29"></a>
+                                    </td>
+                                    <td class="td2">
+                                        <?php
+                                            if ($userStatus == 1){ //用户需要人工验证
+                                                echo "<a href='userNotVerify.php'>{$data_post['postTitle']}</a>";
+                                            }else {
+                                                if ($status == 1) { //禁止发言
+                                                    echo "<a href='forbidTip.php'>{$data_post['postTitle']}</a>";
+                                                } else {
+                                                    echo "<a href='postShow.php?postId={$data_post['postId']}&sid={$data_sm['sid']}'>{$data_post['postTitle']}</a>";
+                                                }
+                                            }
+                                        ?>
+
+                                    </td>
+                                    <td class="td5"><a href="sModuleList.php?sid=<?php echo $data_sm['sid'];?>"><?php echo $data_sm['smoduleName'];?></a></td>
+                                    <td class="td6"><a href="profile.php?uid=<?php echo $data_user['id'];?>"><?php echo $data_user['name'];?></a></td>
+                                    <td class="td3">
+                                        <span class="xi2" title="回复"><?php echo $rep_total; ?></span>
+                                        <span class="xi1" title="查看"> / <?php echo $data_post['times']; ?></span>
+                                    </td>
+                                    <td class="td7" style="width: 15%;"><?php echo tranTime(strtotime($data_post['postTime']));?></td>
+                                </tr>
+                            <?php }
+                        }else{
+                            echo "<tr><td colspan='4' style='padding-left: 15px;'>暂无帖子...</td></tr>";
+                        }
+                        ?>
                         <tr>
-                            <td class="td1">
-                                <a href="#"><img src="img/folder_new.gif" width="31" height="29"></a>
+                            <td colspan="6">
+                                <a class="btn btn-default" id="pubBtn" style="margin-right: 260px;border-color: #fff;"></a class="btn btn-default">
+                                <ul class="pagination" style="display: inline; margin: 0;padding: 0;">
+                                    <?php
+                                    echo $page['html'];
+                                    ?>
+                                </ul>
                             </td>
-                            <td class="td2"><a href="postShow.php?postId=<?php echo $data_post['postId'];?>&sid=<?php echo $data_sm['sid'];?>"><?php echo $data_post['postTitle'];?></a></td>
-                            <td class="td5"><a href="sModuleList.php?sid=<?php echo $data_sm['sid'];?>"><?php echo $data_sm['smoduleName'];?></a></td>
-                            <td class="td6"><a href="profile.php?uid=<?php echo $data_user['id'];?>"><?php echo $data_user['name'];?></a></td>
-                            <td class="td3">
-                                <span class="xi2" title="回复"><?php echo $rep_total; ?></span>
-                                <span class="xi1" title="查看"> / <?php echo $data_post['times']; ?></span>
-                            </td>
-                            <td class="td7"><?php echo tranTime(strtotime($data_post['postTime']));?></td>
                         </tr>
-                    <?php }
-                }else{
-                    echo "<tr><td colspan='4' style='padding-left: 15px;'>暂无帖子...</td></tr>";
-                }
-                ?>
-                <tr>
-                    <td colspan="6">
-                        <a class="btn btn-default" id="pubBtn" style="margin-right: 260px;border-color: #fff;"></a class="btn btn-default">
-                        <ul class="pagination" style="display: inline; margin: 0;padding: 0;">
-                            <?php
-                                echo $page['html'];
-                            ?>
-                        </ul>
-                    </td>
-                </tr>
-            </table>
+                    </table>
+                </div>
+            </div>
+            <?php
+        }
+    }else{//非会员显示
+        ?>
+        <div class="position">
+            <div class="z">
+                <a href="index.php" class="nvhm"><i class="fa fa-home"></i></a>
+                <em><i class="fa fa-angle-right"></i></em>
+                <a href="#">我的帖子</a>
+            </div>
         </div>
-    </div>
+        <div class="pm-wrap">
+            <div class="pm">
+                <strong>我的帖子</strong>
+                <em>今日：</em>
+                <em><?php echo $ptotal_today;?></em>
+                <span class="pipe">|</span>
+                <em>昨日：</em>
+                <em><?php echo $ptotal_yesterday;?></em>
+                <span class="pipe">|</span>
+                <em>主题：</em>
+                <em><?php echo $post_total;?></em>
+            </div>
+            <div class="pm-desc">
+                <a href="publish.php" class="btn btn-primary"><i class="fa fa-edit"></i>发帖</a>
+            </div>
+        </div>
+        <div class="pm-sm">
+            <div class="pm-sm-top" style="position: relative;">
+                <h2>全部主题</h2>
+                <span class="reply poa" style="right: 165px">回复 /</span>
+                <span class="look poa" style="right:132px;">查看</span>
+                <span class="author poa" style="right: 255px;">作者</span>
+                <span class="module poa" style="right: 404px;">版块</span>
+                <span class="lastTime poa" >最后发表时间</span>
+            </div>
+            <div class="pm-sm-list">
+                <table class="table table-condensed table-hover" id="smtable">
+                    <?php
+                    if($post_total) { //当存在帖子时
+                        //输出所有的帖子
+                        while ($data_post = fetch_array($res_post)) {
+                            //查询出当前帖子对应的所属子版块、,user u,reply rep where and u.id={$member_id} and rep.tpostId={$data_post['postId']}
+                            $sql_sm = "select * from sub_module where sid={$data_post['tsmoduleId']}";
+                            $data_sm = fetch_array(execute($link, $sql_sm));
+                            //当前帖子的回复数
+                            $sql_rep = "select * from reply where tpostId={$data_post['postId']}";
+                            $rep_total = nums($link, $sql_rep);
+                            ?>
+                            <tr>
+                                <td class="td1">
+                                    <a href="#"><img src="img/folder_new.gif" width="31" height="29"></a>
+                                </td>
+                                <td class="td2"><a href="postShow.php?postId=<?php echo $data_post['postId'];?>&sid=<?php echo $data_sm['sid'];?>"><?php echo $data_post['postTitle'];?></a></td>
+                                <td class="td5"><a href="sModuleList.php?sid=<?php echo $data_sm['sid'];?>"><?php echo $data_sm['smoduleName'];?></a></td>
+                                <td class="td6"><a href="profile.php?uid=<?php echo $data_user['id'];?>"><?php echo $data_user['name'];?></a></td>
+                                <td class="td3">
+                                    <span class="xi2" title="回复"><?php echo $rep_total; ?></span>
+                                    <span class="xi1" title="查看"> / <?php echo $data_post['times']; ?></span>
+                                </td>
+                                <td class="td7" style="width: 15%;"><?php echo tranTime(strtotime($data_post['postTime']));?></td>
+                            </tr>
+                        <?php }
+                    }else{
+                        echo "<tr><td colspan='4' style='padding-left: 15px;'>暂无帖子...</td></tr>";
+                    }
+                    ?>
+                    <tr>
+                        <td colspan="6">
+                            <a class="btn btn-default" id="pubBtn" style="margin-right: 260px;border-color: #fff;"></a class="btn btn-default">
+                            <ul class="pagination" style="display: inline; margin: 0;padding: 0;">
+                                <?php
+                                echo $page['html'];
+                                ?>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <?php
+    }
+    ?>
+
 </div>
 <!--引入底部-->
 <?php include_once "inc/footer.inc.php"?>
