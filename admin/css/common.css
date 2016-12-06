@@ -67,6 +67,7 @@ textarea {
 }
 .header .logo h1{
     font-size: 24px;
+    margin-top:0;
 }
 .radius-circle{
     border-radius: 50%;

@@ -23,6 +23,10 @@
     require_once 'inc/common.inc.php';
     //调用数据库连接函数
     $link = connect();
+    //查询公告内容
+    $sql_n = "select * from notice where nid=1";
+    $data_n = fetch_array(execute($link, $sql_n));
+    $nc = $data_n["noticeContent"];
     //判断当前是否为登录状态
     if(!($member_id = login_state($link))){
         promptBox("您还未登录，无法发布帖子", 5, "login.php");
@@ -67,7 +71,7 @@
             <div class="tab-content">
                 <div class="tab-pane fade in active" id="publish-cont">
                     <div class="rows" style="margin-top: 10px;">
-                        <select name="selSModule" id="selSModule" class="form-control w25">
+                        <select name="selSModule" id="selSModule" class="form-control w25" style="width: 35%;">
                             <option value="">请选择一个子版块</option>
                             <?php
                             //输出版块的名称
@@ -140,6 +144,16 @@
     $(".yzmpic").on("click",function(){
         $(this).attr("src","inc/vcode.php?key="+Math.random()*Math.pow(10,17)+"");
     });
+    //获取敏感词
+    $.ajax({
+        type: "post",
+        url: "getSensitiveData.php",
+        async: false, //改为同步，不然返回的数据不能设置为全局变量
+        success: function (response) {
+            window.datasw = jQuery.parseJSON(response);
+        }
+    });
+
     //发表帖子
     layui.use("layer", function () {
         var layer = layui.layer;
@@ -165,6 +179,21 @@
                     $("#content").focus();
                 });
                 return false;
+            }
+            for(var i=0; i < datasw.length; i++){
+                var reg = new RegExp(datasw[i]);
+                if(reg.test($("#post-title").val())){
+                    layer.msg("不能含有敏感词语<span style='color: red;'>\""+datasw[i]+"\"</span>", {icon: 5, time: 2000}, function () {
+                        $("#post-title").focus();
+                    });
+                    return false;
+                }
+                if(reg.test($("#content").val())){
+                    layer.msg("不能含有敏感词语<span style='color: red;'>\""+datasw[i]+"\"</span>", {icon: 5, time: 2000}, function () {
+                        $("#content").focus();
+                    });
+                    return false;
+                }
             }
             //判断验证码长度
             if($("#yzm").val().length != 4){

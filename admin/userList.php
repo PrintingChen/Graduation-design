@@ -54,7 +54,7 @@
         <div class="panel admin-panel">
             <div class="panel-head"><strong><span class="fa fa-list"></span> 用户栏目</strong></div>
             <div class="padding border-bottom">
-                <ul class="search" style="padding-right: 22px;">
+                <ul class="search" style="padding-right: 285px;">
                     <li>
                         <button name="search" class="btn btn-default button btn-c"><i class="fa fa-search custom"></i>搜索</button>
                     </li>
@@ -86,9 +86,9 @@
                     <thead>
                         <th style="width: 50px;">ID</th>
                         <th class="a" style="width: 16%;">用户名</th>
-                        <th class="b" style="width: 10%;">头衔</th>
+                        <th class="b" style="width: 8%;">头衔</th>
                         <th class="c" style="width: 20%;">Email</th>
-                        <th style="width: 5%;">发帖数</th>
+                        <th style="width: 6%;">发帖数</th>
                         <th style="width: 8%;">审核状态</th>
                         <th style="width: 10%;">权限状态</th>
                         <th class="d">操作</th>
@@ -138,9 +138,10 @@
                                 ?>
                             </td>
                             <td>
+                                <a href="userChart.php?uid=<?php echo $data_user['id'];?>" class="btn-info btn"><i class="fa fa-eye"></i>详情</a>
                                 <a href="userEdit.php?uid=<?php echo $data_user['id']?>" class="btn-primary btn"><i class="fa fa-edit"></i>修改</a>
                                 <button type="button" uid="<?php echo $data_user['id'];?>" class="btn-danger btn delUserBtn"><i class="fa fa-trash-o"></i>删除</button>
-                                <a href="forbidUser.php?uid=<?php echo $data_user['id'];?>" class="btn-info btn " id="forbidBtn"><i class="fa fa-ban"></i>禁止用户</a>
+                                <a href="forbidUser.php?uid=<?php echo $data_user['id'];?>" class="btn-info btn " id="forbidBtn"><i class="fa fa-ban"></i>禁止</a>
                             </td>
                         </tr>
                     <?php

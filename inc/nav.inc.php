@@ -7,10 +7,10 @@
             </ul>
         </div>
         <div class="input-group" id="search">
-            <form action="">
+            <form action="search.php">
                 <input type="text" name="keywords" class="form-control" placeholder="请输入搜索内容" style="top: 8px;width: 80%">
                 <span class="input-group-btn">
-                    <button type="submit" class="btn btn-primary">搜索</button>
+                    <button name="kw" class="btn btn-primary">搜索</button>
                 </span>
             </form>
         </div>

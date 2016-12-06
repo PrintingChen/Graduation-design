@@ -67,16 +67,6 @@
     $res_reply_lastest = execute($link, $reply_lastest);
 ?>
 <body>
-<?php
-    if(!empty($nc)){
-      echo "<div class='notice'>
-                <div class='container'>
-                    <p><i class='fa fa-volume-up'></i></p><p style='margin-left: 25px;'>系统公告：</p>
-                    <marquee direction='left' width='830' scrollamount='2'>{$nc}</marquee>
-                </div>
-            </div>" ;
-    }
-?>
 <!--引入头部-->
 <?php include_once "inc/header.inc.php"?>
 <!--引入导航-->

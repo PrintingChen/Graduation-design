@@ -82,12 +82,12 @@
                 <table class="table table-hover" style="margin-bottom: 0;">
                     <thead>
                         <th style="width: 50px;">ID</th>
-                        <th>用户名</th>
-                        <th>头衔</th>
-                        <th>Email</th>
-                        <th>发帖数</th>
-                        <th>审核状态</th>
-                        <th>权限状态</th>
+                        <th style="width: 16%;">用户名</th>
+                        <th style="width: 8%;">头衔</th>
+                        <th style="width: 20%;">Email</th>
+                        <th style="width: 6%;">发帖数</th>
+                        <th style="width: 8%;">审核状态</th>
+                        <th style="width: 10%;">权限状态</th>
                         <th>操作</th>
                     </thead>
                     <tbody>
@@ -133,8 +133,10 @@
                                     ?>
                                 </td>
                                 <td>
+                                    <a href="userChart.php?uid=<?php echo $data_user['id'];?>" class="btn-info btn"><i class="fa fa-eye"></i>详情</a>
                                     <a href="userEdit.php?uid=<?php echo $data_user['id'];?>" class="btn-primary btn"><i class="fa fa-edit"></i>修改</a>
                                     <a href="#" uid="<?php echo $data_user['id'];?>" class="btn-danger btn delUserBtn"><i class="fa fa-trash-o"></i>删除</a>
+                                    <a href="forbidUser.php?uid=<?php echo $data_user['id'];?>" class="btn-info btn " id="forbidBtn"><i class="fa fa-ban"></i>禁止</a>
                                 </td>
                             </tr>
                         <?php

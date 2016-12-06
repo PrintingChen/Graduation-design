@@ -1,0 +1,79 @@
+.position {
+    margin: 2px 0;
+    height: 29px;
+    border: none;
+    line-height: 29px;
+}
+.position .z{
+    padding-right: 10px;
+    float: left;
+}
+.nvhm{
+    width: 16px;
+    overflow: hidden;
+    color: #488FCE;
+    font-size: 16px;
+}
+.position .z em{
+    width: 20px;
+    margin: 0 3px;
+    font-style: normal;
+    overflow: hidden;
+    color: #999;
+}
+.pm-sm-top{
+    height:33px;
+    line-height:33px;
+    padding: 0 10px;
+    border-top: 1px solid #FFF;
+    background: #F2F2F2;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.pm-sm-top h2{
+    height: 100%;
+    line-height:31px;
+    font-size: 14px;
+    float: left;
+}
+.search-info{
+    background-color: #F5F5F5;
+    border-bottom: 1px solid #ccc;
+    line-height: 40px;
+    padding: 0 10px;
+}
+.poa{
+    position: absolute;
+}
+.today{
+    right: 265px;
+}
+.yesterday{
+    right: 230px;
+}
+#plist-table{
+    margin-bottom:0;
+    width: 100%;
+}
+#plist-table tr td{
+    height: 40px;
+    line-height:40px;
+}
+td.ltd1 {
+    width: 5%;
+}
+.ltd2{
+    width: 45%;
+}
+td.ltd4 {
+    width: 11%;
+    text-align: center;
+}
+td.ltd5 {
+    width: 10%;
+    text-align: center;
+}
+td.ltd3 {
+    text-align: center;
+    width: 13%;
+}

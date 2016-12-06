@@ -133,7 +133,7 @@
                         }else{
                     ?>
                             <tr>
-                                <td colspan="9">没有搜索到符合条件的记录...</td>
+                                <td colspan="9">暂无未审核帖子...</td>
                             </tr>
                     <?php
                         }

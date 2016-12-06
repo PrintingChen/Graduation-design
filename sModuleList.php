@@ -24,6 +24,10 @@
     require_once 'inc/common.inc.php';
     //调用数据库连接函数
     $link = connect();
+    //查询公告内容
+    $sql_n = "select * from notice where nid=1";
+    $data_n = fetch_array(execute($link, $sql_n));
+    $nc = $data_n["noticeContent"];
     //判断当前是否为登录状态
     $member_id = login_state($link);
     //如果用户登录了的时候,查询登录用户的信息
@@ -270,6 +274,15 @@
 <script>
     $(function () {
         $("#fastPubBtn").on("click", function () {
+            //获取敏感词
+            $.ajax({
+                type: "post",
+                url: "getSensitiveData.php",
+                async: false, //改为同步，不然返回的数据不能设置为全局变量
+                success: function (response) {
+                    window.datasw = jQuery.parseJSON(response);
+                }
+            });
             layui.use("layer", function () {
                 var layer = layui.layer;
                 //帖子标题不能为空
@@ -292,6 +305,21 @@
                         $("#content").focus();
                     });
                     return false;
+                }
+                for(var i=0; i < datasw.length; i++){
+                    var reg = new RegExp(datasw[i]);
+                    if(reg.test($("#post-title").val())){
+                        layer.msg("不能含有敏感词语<span style='color: red;'>\""+datasw[i]+"\"</span>", {icon: 5, time: 2000}, function () {
+                            $("#post-title").focus();
+                        });
+                        return false;
+                    }
+                    if(reg.test($("#content").val())){
+                        layer.msg("不能含有敏感词语<span style='color: red;'>\""+datasw[i]+"\"</span>", {icon: 5, time: 2000}, function () {
+                            $("#content").focus();
+                        });
+                        return false;
+                    }
                 }
                 //验证码长度必须为4位
                 if ($("#yzm").val().length != 4){

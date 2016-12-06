@@ -11,11 +11,20 @@ $(function () {
             }
         });
     });
+
+    //获取敏感词
+    $.ajax({
+        type: "post",
+        url: "getSensitiveData.php",
+        async: false, //改为同步，不然返回的数据不能设置为全局变量
+        success: function (response) {
+            window.datasw = jQuery.parseJSON(response);
+        }
+    });
     //刷新验证码
     $(".yzmpic").on("click",function(){
         $(this).attr("src","inc/vcode.php?key="+Math.random()*Math.pow(10,17)+"");
     });
-
     //回复帖子
     layui.use("layer", function () {
         var layer = layui.layer;
@@ -118,7 +127,7 @@ $(function () {
                         if (response == "success"){
                             layer.msg("删除成功", {icon: 1, time: 1000}, function () {
                                 setTimeout(function () {
-                                    window.location.href = "index.php";
+                                    window.location.href = "myPost.php";
                                 });
                             }, 1500);
                         }else if(response == "fail"){
@@ -156,6 +165,7 @@ $(function () {
                 layer.close(index);
             });
         });
+
         //处理回复
         $("#reply").click(function () {
             //判断帖子内容长度
@@ -164,6 +174,15 @@ $(function () {
                     $("#fastrepcont").focus();
                 });
                 return false;
+            }
+            for(var i=0; i < datasw.length; i++){
+                var reg = new RegExp(datasw[i]);
+                if(reg.test($("#fastrepcont").val())){
+                    layer.msg("不能含有敏感词语<span style='color: red;'>\""+datasw[i]+"\"</span>", {icon: 5, time: 2000}, function () {
+                        $("#fastrepcont").focus();
+                    });
+                    return false;
+                }
             }
             //判断验证码长度
             if($("#yzm").val().length != 4){

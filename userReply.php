@@ -21,6 +21,11 @@
     require_once 'inc/common.inc.php';
     //调用数据库连接函数
     $link = connect();
+    //查询公告内容
+    $sql_n = "select * from notice where nid=1";
+    $data_n = fetch_array(execute($link, $sql_n));
+    $nc = $data_n["noticeContent"];
+
     //判断当前是否为登录状态
     if (!($member_id = login_state($link))){
         promptBox("请先登录后才能继续浏览", 5, "login.php");
@@ -40,7 +45,7 @@
     $sql_reply = "select * from reply where ruid={$_GET['uid']}";
     $reply_total = nums($link, $sql_reply);
     //分页
-    $pagesize = 5;
+    $pagesize = 10;
     $page = page($reply_total, $pagesize);
     //分页查询回复
     $reply = "select * from reply where ruid={$_GET['uid']} ORDER BY rid DESC {$page['limit']}";
@@ -87,7 +92,7 @@
             <h2>全部回复</h2>
             <span class="reply poa" style="right: 163px;">回复 /</span>
             <span class="look poa" style="right:131px;">查看</span>
-            <span class="author poa" style="right: 232px;">最后回复者</span>
+            <span class="author poa" style="right: 235px;">最后回复者</span>
             <span class="module poa" style="right: 403px;">版块</span>
             <span class="lastTime poa">最后发表时间</span>
         </div>
@@ -97,14 +102,17 @@
                 if($reply_total) { //当存在回复
                     //输出所有回复对应的帖子
                     while ($data_reply = fetch_array($res_reply)) {
-                        //查询出当前回复对应的所属帖子，子版块、
+                        //查询出当前回复对应的所属帖子，子版块
                         $sql_msg = "select * from post p,sub_module sm where postId={$data_reply['tpostId']} and sm.sid=p.tsmoduleId";
                         $data_msg = fetch_array(execute($link, $sql_msg));
+                        //对应帖子的最后回复信息
+                        $sql_lr = "select * from reply where tpostId={$data_msg['postId']} ORDER BY rtime DESC";
+                        $data_lr = fetch_array(execute($link, $sql_lr));
+                        $nums_lr = nums($link, $sql_lr);
                         //回复对应帖子的最后回复人
-                        $lastRep = "select * from reply rep,user u where tpostId={$data_msg['postId']} and u.id=rep.ruid ORDER BY rid DESC";
+                        $lastRep = "select * from user where id={$data_lr['ruid']}";
                         $data_lastRep = fetch_array(execute($link, $lastRep));
-                        $rep_nums = nums($link, $lastRep);
-                        ?>
+                ?>
                         <tr>
                             <td class="td1">
                                 <a href="#"><img src="img/folder_new.gif" width="31" height="29"></a>
@@ -113,10 +121,10 @@
                             <td class="td5"><a href="sModuleList.php?sid=<?php echo $data_msg['sid'];?>"><?php echo $data_msg['smoduleName'];?></a></td>
                             <td class="td6"><a href="profile.php?uid=<?php echo $data_lastRep['id'];?>"><?php echo $data_lastRep['name'];?></a></td>
                             <td class="td3">
-                                <span class="xi2" title="回复"><?php echo $rep_nums; ?></span>
+                                <span class="xi2" title="回复"><?php echo $nums_lr;?></span>
                                 <span class="xi1" title="查看"> / <?php echo $data_msg['times']; ?></span>
                             </td>
-                            <td class="td7" style="width: 15%;"><?php echo tranTime(strtotime($data_lastRep['rtime']));?></td>
+                            <td class="td7" style="width: 15%;"><?php echo tranTime(strtotime($data_lr['rtime']));?></td>
                         </tr>
                     <?php }
                 }else{

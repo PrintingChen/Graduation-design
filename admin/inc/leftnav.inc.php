@@ -18,6 +18,30 @@
             </a>
         </li>
     </ul>
+    <h2>
+        <span><i class="fa fa-cogs"></i></span>
+        基本设置
+    </h2>
+    <ul>
+        <li>
+            <a href="verify.php">
+                <span><i class="fa fa-caret-right"></i></span>
+                审核设置
+            </a>
+        </li>
+        <li>
+            <a href="systemNotice.php">
+                <span><i class="fa fa-caret-right"></i></span>
+                系统公告
+            </a>
+        </li>
+        <li>
+            <a href="sensitiveWord.php">
+                <span><i class="fa fa-caret-right"></i></span>
+                词语过滤
+            </a>
+        </li>
+    </ul>
     <?php
         //查询当前登录的管理员的等级
         $sql_currm = "select * from manager where mid={$mid}";
@@ -47,30 +71,6 @@
     <?php
         }
     ?>
-    <h2>
-        <span><i class="fa fa-cogs"></i></span>
-        基本设置
-    </h2>
-    <ul>
-        <li>
-            <a href="verify.php">
-                <span><i class="fa fa-caret-right"></i></span>
-                审核设置
-            </a>
-        </li>
-        <li>
-            <a href="systemNotice.php">
-                <span><i class="fa fa-caret-right"></i></span>
-                系统公告
-            </a>
-        </li>
-        <li>
-            <a href="sensitiveWord.php">
-                <span><i class="fa fa-caret-right"></i></span>
-                词语过滤
-            </a>
-        </li>
-    </ul>
     <h2>
         <span><i class="fa fa-users"></i></span>
         用户管理
@@ -152,6 +152,18 @@
             <a href="replyList.php">
                 <span><i class="fa fa-caret-right"></i></span>
                 回复列表
+            </a>
+        </li>
+    </ul>
+    <h2>
+        <span><i class="fa fa-bar-chart"></i></span>
+        系统信息
+    </h2>
+    <ul>
+        <li>
+            <a href="systemInfo.php">
+                <span><i class="fa fa-caret-right"></i></span>
+                信息统计
             </a>
         </li>
     </ul>

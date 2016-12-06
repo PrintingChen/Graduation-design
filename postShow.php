@@ -25,6 +25,10 @@
     require_once 'inc/common.inc.php';
     //调用数据库连接函数
     $link = connect();
+    //查询公告内容
+    $sql_n = "select * from notice where nid=1";
+    $data_n = fetch_array(execute($link, $sql_n));
+    $nc = $data_n["noticeContent"];
     //判断当前是否为登录状态
     $member_id = login_state($link);
 
@@ -50,6 +54,13 @@
     $post_msg = "select * from post p,sub_module sm,parent_module pm,user u where p.postId={$postId} and p.tsmoduleId=sm.sid and p.postuid=u.id and sm.tParenModuleId=pm.pid";
     $res_post = execute($link, $post_msg);
     $data_post = fetch_array($res_post);
+    //判断用户类型
+    $userType = "";
+    if ($data_post["userType"] == 1){
+        $userType = "版主";
+    }else{
+        $userType = "普户";
+    }
     //查询当前帖子对应的父版块
     $topm_sql = "select * from parent_module where pid={$data_post['tParenModuleId']}";
     $data_topm = fetch_array(execute($link, $topm_sql));
@@ -101,26 +112,12 @@
     $edit = "";
     $delete = "";
     if (($data_post['id'] == $member_id) || ($member_id == $data_topm['moderatorId'])){
-        $edit = "<a class='editBtn' id='editpBtn' shield='{$ishield}' postId='{$postId}' sid='{$data_post['sid']}' href='javascript:void(0);'>编辑</a>";
+        $edit = "<a class='editBtn' id='editpBtn' shield='{$ishield}' postId='{$postId}' sid='{$data_post['sid']}' postStatus='{$data_post['postStatus']}' href='javascript:void(0);'>编辑</a>";
         $delete = "<p postId='{$postId}' class='deleteBtn'>删除</p>";
     }
 
 ?>
 <script>
-    /*$(function () {
-        layui.use("layer", function () {
-            var layer = layui.layer;
-            $("#move").on("click", function () {
-                layer.open({
-                    type: 2,
-                    area: ['300px', '230px'],
-                    fix: false, //不固定
-                    maxmin: true,
-                    content: '1.html'
-                });
-            });
-        });
-    });*/
 </script>
 <body>
 <!--引入头部-->
@@ -193,7 +190,7 @@
                     <span class="xi1">{$data_post['times']}</span>
                     <span class="pipe">|</span>
                     <span class="xg1">回复:</span>
-                    <span class="xi1">5</span>
+                    <span class="xi1">{$rep_total}</span>
                 </div>
                 <div class="pls"></div>
                 <div class="author">
@@ -205,14 +202,14 @@
                 <div class="theme">
                     <table>
                         <tr>
-                            <td><a href="#">{$post_counts}</a></td>
-                            <td><a href="#">{$post_counts}</a></td>
+                            <td><a href="userPost.php?uid={$data_post['id']}">{$post_counts}</a></td>
+                            <td><a href="userPost.php?uid={$data_post['id']}">{$post_counts}</a></td>
                             <td style="border: none;"><a href="#">**</a></td>
                         </tr>
                         <tr>
                             <td>主题</td>
                             <td>帖子</td>
-                            <td style="border: none;">普户</td>
+                            <td style="border: none;">{$userType}</td>
                         </tr>
                     </table>
                 </div>
@@ -253,6 +250,13 @@ EOT;
         //查询出当条回复的回帖人、时间等信息
         $sql_sel = "select * from user u where {$data_reply['ruid']}=u.id";
         $data_reply_msg = fetch_array(execute($link, $sql_sel));
+        //判断回帖人类型
+        $userTypep = "";
+        if ($data_reply_msg["userType"] == 1){
+            $userTypep = "版主";
+        }else{
+            $userTypep = "普户";
+        }
         //回复者头像
         if (isset($data_reply_msg['photo']) && !empty($data_reply_msg['photo'])){
             $rep_url = $data_reply_msg['photo'];
@@ -284,7 +288,7 @@ EOT;
                         <tr>
                             <td>主题</td>
                             <td>帖子</td>
-                            <td style="border: none;">普户</td>
+                            <td style="border: none;"><?php echo $userTypep;?></td>
                         </tr>
                     </table>
                 </div>

@@ -100,24 +100,6 @@ EOT;
 	    echo $html;
 	}
 
-    function skip_manage($url,$pic,$msg) {//
-        $html = <<<EOT
-            <!DOCTYPE html>
-            <html>
-            <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="refresh" content="3;url=$url" />
-            <title>提示页</title>
-            <link rel="stylesheet" href="style/public.css">
-            <link rel="stylesheet" href="style/confirm.css">
-            </head>
-            <body>
-            <p class="notice"><span class="pic {$pic}">{$msg}<a class="skip" href="{$url}">3秒后自动跳转……</a></span></p>
-            </body>
-            </html>
-EOT;
-        echo $html;
-    }
     
 	/**
 	 * promptBox() 提示框
@@ -151,18 +133,16 @@ EOT;
      * @param bool $_flag 表示验证码是否要边框
      * @return void 这个函数执行后返回一个验证码
      */
-    function vcode($width = 75, $height = 30,  $_rnd_num = 4,
-        $_flag = false){
+    function vcode($width = 75,$height = 30,$_rnd_num = 4,$_flag = false){
         //创建随机码
         $_nmsg = null;
         for ($i = 0; $i < $_rnd_num; $i++) {
             $_nmsg .= dechex(mt_rand(0, 15));
         }
-    
         //将随机码存放在session
         session_start();
         $_SESSION['code'] = $_nmsg;
-    
+
         //创建画布
         $im = imagecreatetruecolor($width, $height);
     

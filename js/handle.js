@@ -125,8 +125,10 @@ $(function () {
         $("#editpBtn").on("click", function () {
             $postId = $("#editpBtn").attr("postId");
             $shield = $("#editpBtn").attr("shield");
-            if ($shield == "1"){//帖子被屏蔽时
-                layer.msg("您的主题已被屏蔽，无法编辑", {icon: 5, time: 1500});
+            $postStatus = $("#editpBtn").attr("postStatus");
+            //console.log($postStatus == "1");
+            if ($shield == "1" || $postStatus == "1"){//帖子被屏蔽时
+                layer.msg("您的主题已被屏蔽或者未通过审核，无法编辑", {icon: 5, time: 2000});
             }else if($shield == "0"){
                 window.location.href = "postEdit.php?postId="+$postId+"";
             }

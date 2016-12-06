@@ -49,3 +49,7 @@
 .pagination li{
     float: left;
 }
+.sw{
+    line-height: 50px;
+    padding-left: 17px;
+}

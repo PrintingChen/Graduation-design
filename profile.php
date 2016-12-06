@@ -20,6 +20,10 @@
     require_once 'inc/common.inc.php';
     //调用数据库连接函数
     $link = connect();
+    //查询公告内容
+    $sql_n = "select * from notice where nid=1";
+    $data_n = fetch_array(execute($link, $sql_n));
+    $nc = $data_n["noticeContent"];
     //判断当前是否为登录状态
     if(!($member_id = login_state($link))){
         promptBox("您还未登录", 5, "index.php");

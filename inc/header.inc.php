@@ -1,3 +1,13 @@
+<?php
+if(!empty($nc)){
+    echo "<div class='notice'>
+            <div class='container'>
+                <p><i class='fa fa-volume-up'></i></p><p style='margin-left: 25px;'>系统公告：</p>
+                <marquee direction='left' width='830' scrollamount='2'>{$nc}</marquee>
+            </div>
+          </div>" ;
+}
+?>
 <div id="header">
     <div class="container" style="width: 960px;padding: 0;">
         <div class="logo"><a href="index.php"><img src="img/logo.png" height="85"></a></div>

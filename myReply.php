@@ -21,6 +21,10 @@
     require_once 'inc/common.inc.php';
     //调用数据库连接函数
     $link = connect();
+    //查询公告内容
+    $sql_n = "select * from notice where nid=1";
+    $data_n = fetch_array(execute($link, $sql_n));
+    $nc = $data_n["noticeContent"];
     //判断当前是否为登录状态
     $member_id = login_state($link);
     //判断当前登录用户的访问状态
@@ -102,7 +106,7 @@
             <h2>全部回复</h2>
             <span class="reply poa" style="right: 163px;">回复 /</span>
             <span class="look poa" style="right:131px;">查看</span>
-            <span class="author poa" style="right: 232px;">最后回复者</span>
+            <span class="author poa" style="right: 235px;">最后回复者</span>
             <span class="module poa" style="right: 403px;">版块</span>
             <span class="lastTime poa">最后发表时间</span>
         </div>
@@ -115,13 +119,13 @@
                         //查询出当前回复对应的所属帖子，子版块、
                         $sql_msg = "select * from post p,sub_module sm where p.postId={$data_reply['tpostId']} and sm.sid=p.tsmoduleId";
                         $data_msg = fetch_array(execute($link, $sql_msg));
+                        //对应帖子的最后回复信息
+                        $sql_lr = "select * from reply where tpostId={$data_msg['postId']} ORDER BY rtime DESC";
+                        $data_lr = fetch_array(execute($link, $sql_lr));
+                        $nums_lr = nums($link, $sql_lr);
                         //回复对应帖子的最后回复人
-                        $lastRep = "select * from reply where tpostId={$data_msg['postId']} order by rid DESC limit 0,1";
-                        //echo nums($link, $lastRep);exit;
-                        $drw = fetch_array(execute($link, $lastRep));
-                        $sql_rw = "select * from user where id={$drw['ruid']}";
-                        $data_lastRep = fetch_array(execute($link, $sql_rw));
-                        $rep_nums = nums($link, $lastRep);
+                        $lastRep = "select * from user where id={$data_lr['ruid']}";
+                        $data_lastRep = fetch_array(execute($link, $lastRep));
                 ?>
                         <tr>
                             <td class="td1">
@@ -144,10 +148,10 @@
                             <td class="td5"><a href="sModuleList.php?sid=<?php echo $data_msg['sid'];?>"><?php echo $data_msg['smoduleName'];?></a></td>
                             <td class="td6"><a href="profile.php?uid=<?php echo $data_lastRep['id'];?>"><?php echo $data_lastRep['name'];?></a></td>
                             <td class="td3">
-                                <span class="xi2" title="回复"><?php echo $rep_nums; ?></span>
+                                <span class="xi2" title="回复"><?php echo $nums_lr; ?></span>
                                 <span class="xi1" title="查看"> / <?php echo $data_msg['times']; ?></span>
                             </td>
-                            <td class="td7" style="width: 15%;"><?php echo tranTime(strtotime($drw['rtime']));?></td>
+                            <td class="td7" style="width: 15%;"><?php echo tranTime(strtotime($data_lr['rtime']));?></td>
                         </tr>
                     <?php }
                 }else{
