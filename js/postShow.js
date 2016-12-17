@@ -11,7 +11,6 @@ $(function () {
             }
         });
     });
-
     //获取敏感词
     $.ajax({
         type: "post",
@@ -25,6 +24,7 @@ $(function () {
     $(".yzmpic").on("click",function(){
         $(this).attr("src","inc/vcode.php?key="+Math.random()*Math.pow(10,17)+"");
     });
+    
     //回复帖子
     layui.use("layer", function () {
         var layer = layui.layer;

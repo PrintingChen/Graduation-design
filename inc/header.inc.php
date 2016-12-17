@@ -10,7 +10,7 @@ if(!empty($nc)){
 ?>
 <div id="header">
     <div class="container" style="width: 960px;padding: 0;">
-        <div class="logo"><a href="index.php"><img src="img/logo.png" height="85"></a></div>
+        <div class="logo"><a href="index.php"><img src="img/logo.png" height="65"></a></div>
         <div class="info">
             <?php
                 //头像地址
@@ -51,7 +51,6 @@ EOT;
                                         <td style="text-align: left; width: 70px;">
                                             <select name="" id="sel">
                                                 <option value="">用户名</option>
-                                                <option value="">email</option>
                                             </select>
                                         </td>
                                         <td><input type="text" name="user" id="user"></td>

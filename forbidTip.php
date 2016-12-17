@@ -36,11 +36,27 @@
 <?php include_once "inc/header.inc.php"?>
 <!--引入导航-->
 <?php include_once "inc/nav.inc.php"?>
-<div class="container" style="width: 990px;">
-    <div class="forbid-status">
+<div class="container" style=" background-color: #EDEDF0; padding-bottom: 50px;">
+    <div class="module-error">
+        <div class="error-main clearfix">
+            <div class="labeli"><img src="img/error.png" alt=""></div>
+            <div class="info">
+                <h3 class="title">你的访问受限!!!</h3>
+                <div class="reason">
+                    <p>可能的原因：</p>
+                    <p>您所在的用户组(禁止发言)无法进行此操作</p>
+                </div>
+                <div class="oper">
+                    <p><a href="javascript:history.go(-1);">返回上一级页面&gt;</a></p>
+                    <p><a href="index.php">回到网站首页&gt;</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<div class="forbid-status">
         <img src="img/error.jpg" alt="">
         抱歉，您所在的用户组(禁止发言)无法进行此操作
-    </div>
+    </div>-->
 </div>
 <!--引入底部-->
 <?php include_once "inc/footer.inc.php"?>

@@ -68,9 +68,23 @@
     if(isset($status)) {//会员显示
         if ($status == 2) {//会员，禁止显示
             ?>
-            <div class="forbid-status">
-                <img src="img/error.jpg" alt="">
-                抱歉，您的 IP 地址不在允许范围内，或您的账号被禁用，无法访问本站点
+            <div class="container" style="background-color: #EDEDF0; padding-bottom: 50px;">
+                <div class="module-error">
+                    <div class="error-main clearfix">
+                        <div class="labeli"><img src="img/error.png" alt=""></div>
+                        <div class="info">
+                            <h3 class="title">你的访问受限!!!</h3>
+                            <div class="reason">
+                                <p>可能的原因：</p>
+                                <p>您的 IP 地址不在允许范围内，或您的账号被禁用，无法访问本站点</p>
+                            </div>
+                            <div class="oper">
+                                <p><a href="javascript:history.go(-1);">返回上一级页面&gt;</a></p>
+                                <p><a href="index.php">回到网站首页&gt;</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <?php
         } else {//会员，非禁止显示

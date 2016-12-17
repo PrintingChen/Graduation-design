@@ -29,6 +29,12 @@ $(function () {
     $("#form-contact").formValidator();
     $("#form-working").formValidator();
 
+    //图片预览
+    $("#upload").on("change",function () {
+        var url = window.URL.createObjectURL(this.files[0]);
+        $(".imgu").attr("src", url);
+    });
+
     //更新验证码
     $(".yzmpic").on("click",function(){
         $(this).attr("src","inc/vcode.php?key="+Math.random()*Math.pow(10,17)+"");

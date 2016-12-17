@@ -224,7 +224,6 @@
                     <img class="authicn vm" src="img/online_moderator.gif" alt="">
                     <em>发表于 {$postTime}</em>
                     <span class="pipe">|</span>
-                    <a href="">只看该作者</a>
                     <strong class="floor" style="color: #f00;">楼主</strong>
                     <div class="pcontent">
                         {$postContent}
@@ -298,8 +297,6 @@ EOT;
                 <div class="authi authirep">
                     <img class="authicn vm" src="img/online_moderator.gif" alt="">
                     <em>发表于 <?php echo tranTime(strtotime($data_reply['rtime']));?></em>
-                    <span class="pipe">|</span>
-                    <a href="">只看该作者</a>
                     <strong class="floor">
                         <?php
                             $floors = $floor++;

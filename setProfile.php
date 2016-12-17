@@ -76,10 +76,22 @@
 if(isset($status)) {//会员显示
     if ($status == 2) {//会员，禁止显示
 ?>
-        <div class="container">
-            <div class="forbid-status">
-                <img src="img/error.jpg" alt="">
-                抱歉，您的 IP 地址不在允许范围内，或您的账号被禁用，无法访问本站点
+        <div class="container" style="background-color: #EDEDF0; padding-bottom: 50px;">
+            <div class="module-error">
+                <div class="error-main clearfix">
+                    <div class="labeli"><img src="img/error.png" alt=""></div>
+                    <div class="info">
+                        <h3 class="title">你的访问受限!!!</h3>
+                        <div class="reason">
+                            <p>可能的原因：</p>
+                            <p>您的 IP 地址不在允许范围内，或您的账号被禁用，无法访问本站点</p>
+                        </div>
+                        <div class="oper">
+                            <p><a href="javascript:history.go(-1);">返回上一级页面&gt;</a></p>
+                            <p><a href="index.php">回到网站首页&gt;</a></p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 <?php
@@ -88,10 +100,22 @@ if(isset($status)) {//会员显示
         <?php
             if ($status == 1){ //被禁止发言
         ?>
-                <div class="container">
-                    <div class="forbid-status">
-                        <img src="img/error.jpg" alt="">
-                        抱歉，空间已被锁定无法访问，如有疑问请联系管理员
+                <div class="container" style="background-color: #EDEDF0; padding-bottom: 50px;">
+                    <div class="module-error">
+                        <div class="error-main clearfix">
+                            <div class="labeli"><img src="img/error.png" alt=""></div>
+                            <div class="info">
+                                <h3 class="title">你的访问受限!!!</h3>
+                                <div class="reason">
+                                    <p>可能的原因：</p>
+                                    <p>您所在的用户组(禁止发言)无法进行此操作</p>
+                                </div>
+                                <div class="oper">
+                                    <p><a href="javascript:history.go(-1);">返回上一级页面&gt;</a></p>
+                                    <p><a href="index.php">回到网站首页&gt;</a></p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
         <?php
@@ -128,7 +152,12 @@ if(isset($status)) {//会员显示
                                         <p style="font-size: 12px">请选择一个新照片进行上传编辑。</p>
                                     </div>
                                     <div class="upload-area">
-                                        <input type="file" name="upload" id="upload">
+                                        <img src="<?php echo $img_url;?>" width="200" height="200" class="
+                                        imgu">
+                                        <a href="javascript:void(0);">
+                                            <div class="filePicker" style="margin-top: 20px;position: absolute;">点击选择文件</div>
+                                            <input type="file" name="upload" id="upload">
+                                        </a>
                                     </div>
                                     <div>
                                         <button name="subUploadpic" class="btn btn-primary" id="upload-btn"><i class="fa fa-check-square-o"></i>提交</button>
